@@ -1,5 +1,5 @@
 <?php
-define("VERSION", "V 0.1.0");
+define("VERSION", "V0.1.1");
 include_once('Configuration.php');
 
 require_once('Domain.php');

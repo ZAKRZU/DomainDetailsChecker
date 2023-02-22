@@ -45,8 +45,10 @@ class Redirection
         return $this->redirects[0];
     }
 
-    public function getLast(): Redirect
+    public function getLast(): Redirect|null
     {
+        if ($this->getSize() === 0)
+            return null;
         return $this->redirects[$this->getSize()-1];
     }
 
@@ -67,11 +69,11 @@ class Redirection
 
     private function checkHttps(): void
     {
-        $this->https = true;
-        foreach ($this->redirects as $key => $value) {
-            if (!$value->getHasHTTPS())
-                $this->https = false;
+        if (!$this->getLast()) {
+            $this->https = false;
+            return;
         }
+        $this->https = $this->getLast()->getHasHTTPS();
     }
 
     private function checkRedirects(string $domain): void

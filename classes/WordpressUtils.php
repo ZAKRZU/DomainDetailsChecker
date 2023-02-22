@@ -16,12 +16,35 @@ class WordpressUtils
                 }
             }
         }
-        $this->rss = $this->getCurlHeaders($domain.'/wp-content/plugins/really-simple-ssl/');
+        $this->rss = $this->lookForRSS($domain);
     }
 
     public function hasRSS(): bool
     {
         return $this->rss;
+    }
+
+    public function lookForRSS(string $domain)
+    {
+        $fp = fopen('https://'.$domain.'/wp-content/plugins/really-simple-ssl/', 'r');
+        try {
+            $headers = stream_get_meta_data($fp)['wrapper_data'];
+        } catch (\TypeError $th) {
+            return $http_response_header[0];
+        }
+
+        foreach ($headers as $key => $value) {
+
+            if (str_starts_with($value, 'HTTP/1.1'))
+            {
+                $val = intval(substr($value, 9, 3));
+                // if ($val)
+                return $val;
+            }
+
+        }
+
+        return 0;
     }
 
     public function getCurlHeaders(string $url): bool
@@ -64,6 +87,7 @@ class WordpressUtils
         $code = str_replace('HTTP/2 ', '', $code);
         $code = str_replace('HTTP/3 ', '', $code);
         $code = intval(substr($code, 0, 3));
+        var_dump($nheader);
 
         if ($code === 200 || $code === 403) {
             return true;
