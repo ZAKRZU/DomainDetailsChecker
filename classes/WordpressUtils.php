@@ -16,7 +16,17 @@ class WordpressUtils
                 }
             }
         }
-        $this->rss = $this->lookForRSS($domain);
+        switch ($this->lookForRSS($domain)) {
+            case 'HTTP/1.1 403 Forbidden':
+                $this->rss = true;
+                break;
+            case '200':
+                $this->rss = true;
+                break;
+            default:
+                $this->rss = false;
+                break;
+        }
     }
 
     public function hasRSS(): bool
