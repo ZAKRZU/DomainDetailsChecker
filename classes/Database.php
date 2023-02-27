@@ -3,6 +3,9 @@
 class Database
 {
     private $conn;
+    
+    private string $tableName = 'domain_checker';
+
     public function __construct(string $servername, string $username, string $password, string $dbname)
     {
         try {
@@ -14,7 +17,7 @@ class Database
             }
         }
 
-        $sql = "CREATE TABLE if not exists Domain_Checker(
+        $sql = "CREATE TABLE if not exists ".$this->tableName."(
             id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             domain VARCHAR(120) NOT NULL,
             date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -25,7 +28,7 @@ class Database
         }
     }
 
-    public function isDBSupported(): bool
+    public function isConnected(): bool
     {
         return $this->conn ? true : false;
     }
@@ -35,7 +38,7 @@ class Database
         if (!$this->conn)
             return;
 
-        $stmt = $this->conn->prepare("INSERT INTO Domain_Checker (domain) VALUES (?)");
+        $stmt = $this->conn->prepare("INSERT INTO ".$this->tableName." (domain) VALUES (?)");
         $stmt->bind_param("s", $domain);
         $stmt->execute();
 
@@ -47,7 +50,7 @@ class Database
         if (!$this->conn)
             return -1;
 
-        $stmt = $this->conn->prepare("SELECT count(distinct DATE(date)) FROM Domain_Checker WHERE domain like (?)");
+        $stmt = $this->conn->prepare("SELECT count(distinct DATE(date)) FROM ".$this->tableName." WHERE domain like (?)");
         $stmt->bind_param("s", $domain);
         $stmt->execute();
 
@@ -63,7 +66,7 @@ class Database
         if (!$this->conn)
             return '';
 
-        $stmt = $this->conn->prepare("SELECT * FROM Domain_Checker WHERE domain like (?) ORDER BY id desc LIMIT 1");
+        $stmt = $this->conn->prepare("SELECT * FROM ".$this->tableName." WHERE domain like (?) ORDER BY id desc LIMIT 1");
         $stmt->bind_param("s", $domain);
         $stmt->execute();
 

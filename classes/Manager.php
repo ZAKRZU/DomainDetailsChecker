@@ -103,8 +103,8 @@ class Manager
         return $this->domainLastCheck;
     }
 
-    public function getDatabaseSupport(): bool
+    public function isDBConnected(): bool
     {
-        return $this->db->isDBSupported();
+        return $this->db->isConnected();
     }
 }

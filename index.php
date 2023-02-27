@@ -64,7 +64,7 @@ if (isset($_GET['lookup'])) {
             <?php } else { ?>
             <div class="row">
                 <?php 
-                if ($manager->getDatabaseSupport())
+                if ($manager->isDBConnected())
                 if ($manager->getDomainCheckCount() > 0)
                     echo "<span>This domains has been checked " . $manager->getDomainCheckCount() . 
                         " time! Last time " . $manager->getDomainLastCheckDate() . "</span>";
