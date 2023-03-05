@@ -16,7 +16,7 @@ class DomainChecker
     public function add(DomainEntity $domain): bool
     {
         $result = false;
-        $sql = "INSERT INTO Domain_Checker (domain) VALUES (?)";
+        $sql = "INSERT INTO domain_checker (domain) VALUES (?)";
         $domainName = $domain->getDomain();
 
         $stmt = $this->db->getConn()->prepare($sql);
@@ -29,7 +29,7 @@ class DomainChecker
 
     public function getAll(): array {
         $resultArray = [];
-        $sql = "SELECT * FROM Domain_Checker";
+        $sql = "SELECT * FROM domain_checker";
         $stmt = $this->db->getConn()->prepare($sql);
         $result = $stmt->execute();
         if ($result) {
@@ -47,7 +47,7 @@ class DomainChecker
 
     public function getAllByDomain(string $domain): array {
         $resultArray = [];
-        $sql = "SELECT * FROM Domain_Checker WHERE domain like (?)";
+        $sql = "SELECT * FROM domain_checker WHERE domain like (?)";
         $stmt = $this->db->getConn()->prepare($sql);
         $stmt->bind_param('s', $domain);
         $stmt->bind_result($id, $domain, $date);
@@ -65,7 +65,7 @@ class DomainChecker
     }
 
     public function countDomain(string $domain): int|bool {
-        $sql = "SELECT count(*) FROM Domain_Checker WHERE domain like (?)";
+        $sql = "SELECT count(*) FROM domain_checker WHERE domain like (?)";
         $stmt = $this->db->getConn()->prepare($sql);
         $stmt->bind_param('s', $domain);
         $result = $stmt->execute();
@@ -79,7 +79,7 @@ class DomainChecker
     }
 
     public function getLastDomain(string $domain): DomainEntity|bool {
-        $sql = "SELECT * FROM Domain_Checker WHERE domain like (?) order by date desc LIMIT 1";
+        $sql = "SELECT * FROM domain_checker WHERE domain like (?) order by date desc LIMIT 1";
         $stmt = $this->db->getConn()->prepare($sql);
         $stmt->bind_param('s', $domain);
         $stmt->bind_result($id, $domain, $date);
@@ -97,7 +97,7 @@ class DomainChecker
     }
 
     public function getById(int $id): DomainEntity|bool {
-        $sql = "SELECT * FROM Domain_Checker WHERE id = ?";
+        $sql = "SELECT * FROM domain_checker WHERE id = ?";
         $stmt = $this->db->getConn()->prepare($sql);
         $stmt->bind_param('i', $id);
         $stmt->bind_result($id, $domain, $date);
