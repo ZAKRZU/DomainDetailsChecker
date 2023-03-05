@@ -1,0 +1,23 @@
+<form action="" method="GET">
+    <div class="row">
+        <div class="col">
+            <label for="domain" class="form-label lead">Type domain name you want to check:</label>
+            <div class="position-relative">
+                <input type="text" name="lookup" class="form-control" value="<?php if ($mainDomain) echo $mainDomain->getDomain() ?>">
+                <div id="loading" class="position-absolute top-50 end-0 translate-middle-y d-none">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto align-self-end">
+            <input id="sendButton" type="submit" class="btn btn-primary" value="Check">
+        </div>
+    </div>
+</form>
+<!-- <div id="loading" class="mt-3 align-center d-none">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div> -->

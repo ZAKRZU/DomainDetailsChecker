@@ -1,0 +1,52 @@
+<div class="col-lg-6 mb-3 mb-lg-0">
+    <div class="card">
+        <div class="card-header"><b>DNS</b></div>
+        <div class="card-body">
+            <b>A</b>
+            <div class="container">
+                <?php 
+                    if ($mainDomain->getDns()) {
+                        echo '<div class="row py-2 border-bottom bg-success-subtle">';
+                    } else {
+                        echo '<div class="row py-2 border-bottom bg-danger-subtle">';
+                    }
+                        echo '<div class="col">'.$mainDomain->getDomain().'</div>';
+                        if ($mainDomain->getDns()) {
+                            echo '<div class="col">'.$mainDomain->getDns()->getRecordA().'</div>';
+                            echo '<div class="col">'.$mainDomain->getDns()->getRevDns().'</div>';
+                        } else {
+                            echo '<div class="col">Not found</div>';
+                        }
+                    echo '</div>';
+
+                    if ($subdomain->getDns()) {
+                        echo '<div class="row py-2 bg-success-subtle">';
+                    } else {
+                        echo '<div class="row py-2 bg-danger-subtle">';
+                    }
+                        echo '<div class="col">'.$subdomain->getDomain().'</div>';
+                        if ($subdomain->getDns()) {
+                            echo '<div class="col">'.$subdomain->getDns()->getRecordA().'</div>';
+                            echo '<div class="col">'.$subdomain->getDns()->getRevDns().'</div>';
+                        } else {
+                            echo '<div class="col">Not found</div>';
+                        }
+                    echo '</div>';
+                ?>
+            </div>
+            <hr>
+            <b>NS</b>
+            <div class="d-flex gap-2 px-3">
+                <?php 
+                    if ($mainDomain->getNsRecords())
+                    foreach ($mainDomain->getNsRecords() as $key => $value) {
+                        echo "<p>".$value['target']."</p>";
+                    }
+                    else {
+                        echo "Nameservers not found";
+                    }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,17 +1,18 @@
 <?php
+namespace App\Component;
 
-class SSLUtil
+class SSLComponent
 {
     private string $cn;
     private string $issuer;
     private string $validFrom;
     private string $validTo;
 
-    public function __construct(Domain $domain)
+    public function __construct(string $domain)
     {
-        $orignal_parse = parse_url('https://' . $domain->getHostname(), PHP_URL_HOST);
+        //$orignal_parse = parse_url('https://' . $domain, PHP_URL_HOST);
         $get = stream_context_create(array("ssl" => array("capture_peer_cert" => TRUE)));
-        $read = stream_socket_client("ssl://" . $orignal_parse . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
+        $read = stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
 
         if ($read == false) {
             $this->cn = "SSL NOT FOUND OR NOT INVALID";
@@ -51,16 +52,16 @@ class SSLUtil
 
     public function getDays(): string
     {
-        $to = new DateTime($this->getValidTo());
-        $today = new DateTime();
+        $to = new \DateTime($this->getValidTo());
+        $today = new \DateTime();
         $interval = $today->diff($to);
         return $interval->format('%R%a days');
     }
 
     public function getDaysNumber(): int
     {
-        $to = new DateTime($this->getValidTo());
-        $today = new DateTime();
+        $to = new \DateTime($this->getValidTo());
+        $today = new \DateTime();
         $interval = $today->diff($to);
         return intval($interval->format('%R%a'));
     }

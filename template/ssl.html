@@ -1,0 +1,40 @@
+<div class="col-lg-6">
+    <div class="card">
+        <?php 
+
+        if ($ssl->getDaysNumber() > 0 & $ssl->getDaysNumber() < SSL_WARNING_DAYS) {
+            echo    '<div class="card-header bg-warning-subtle bg-gradient"><b>SSL</b></div>
+                     <div class="card-body bg-warning-subtle">';
+        } else if ($ssl->getDaysNumber() < 1) {
+            echo    '<div class="card-header bg-danger-subtle bg-gradient"><b>SSL</b></div>
+                     <div class="card-body bg-danger-subtle">';
+        } else {
+            echo    '<div class="card-header bg-success-subtle bg-gradient"><b>SSL</b></div>
+                     <div class="card-body bg-success-subtle">';
+        }
+        ?>
+            <div class="d-flex flex-column gap-2 ">
+                    <div class="row">
+                        <div class="col">CN</div>
+                        <div class="col"><?php  echo $ssl->getCN() ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col">ISSUER</div>
+                        <div class="col"><?php  echo $ssl->getIssuer() ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col">VALID FROM</div>
+                        <div class="col"><?php  echo $ssl->getValidFrom() ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col">VALID TO</div>
+                        <div class="col"><?php  echo $ssl->getValidTo() ?></div>
+                    </div>
+                    <div class="row">
+                        <div class="col">DAYS</div>
+                        <div class="col"><?php  echo $ssl->getDays() ?></div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

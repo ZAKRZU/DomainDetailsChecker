@@ -1,0 +1,27 @@
+<div class="d-flex flex-column">
+    <h2>WEBSITE DETAILS</h2>
+    <div class="row border-bottom border-top py-2">
+        <div class="col">IS WORDPRESS</div>
+        <div class="col">
+            <?php 
+            if ($wp->isWordpress()) {
+                echo '<span class="badge bg-success">YES</span>';
+            } else {
+                echo '<span class="badge bg-danger">NO EVIDENCE FOUND</span>';
+            }
+            ?>
+        </div>
+    </div>
+    <div class="row border-bottom py-2">
+        <div class="col">REALLY SIMPLE SSL</div>
+        <div class="col">
+            <?php 
+            if ($wp->hasRSS()) {
+                echo '<span class="badge bg-success">YES</span>';
+            } else {
+                echo '<span class="badge bg-danger">NOT FOUND</span>';
+            }
+            ?>
+        </div>
+    </div>
+</div>

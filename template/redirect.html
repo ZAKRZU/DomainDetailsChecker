@@ -1,0 +1,118 @@
+<table class="table accordion">
+    <thead>
+        <tr>
+            <th scope="col">FROM</th>
+            <th scope="col">TO</th>
+            <th scope="col">HTTPS</th>
+            <th scope="col">SAME DOMAIN</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+        if (count($mRedirect->getAll()) > 0) {
+            echo '<tr data-bs-toggle="collapse" data-bs-target="#mainDomain">';
+            echo '<th scope="row">'.$mRedirect->getFirst()->getFrom().'</th>';
+            echo '<td>'.$mRedirect->getLast()->getLocation().'</td>'; // last redirect
+            if ($mRedirect->hasHTTPS())
+                echo '<td><span class="badge bg-success">YES</span></td>';
+            else
+                echo '<td><span class="badge bg-danger">NO</span></td>';
+            if ($mRedirect->redirectsToAnotherSite())
+                echo '<td><span class="badge bg-danger">NO</span></td>';
+            else
+                echo '<td><span class="badge bg-success">YES</span></td>';
+            echo '<td><span class="bi bi-chevron-down"></span></td></tr>';
+            foreach ($mRedirect->getAll() as $key => $value) {
+                echo '<tr class="collapse accordion-collapse bg-secondary" id="mainDomain">';
+                echo '<th scope="row">'.$value->getFrom().'</th>';
+                echo '<td>'.$value->getLocation().'</td>';
+                if ($value->getHasHTTPS())
+                    echo '<td><span class="badge bg-success">YES</span></td>';
+                else
+                    echo '<td><span class="badge bg-danger">NO</span></td>';
+                if ($value->getAbroad())
+                    echo '<td><span class="badge bg-danger">NO</span></td>';
+                else
+                    echo '<td colspan="2"><span class="badge bg-success">YES</span></td>';
+                echo "</tr>";
+            }
+        } else {
+            echo '<tr class="bg-danger-subtle">
+            <th scope="row">http://' . $mainDomain->getDomain() . '</th>
+            <td colspan="4">NOT FOUND</td>
+            </tr>';
+        }
+    ?>
+        <?php 
+        if (count($sRedirect->getAll()) > 0) {
+            echo '<tr data-bs-toggle="collapse" data-bs-target="#subDomain">';
+            echo '<th scope="row">'.$sRedirect->getFirst()->getFrom().'</th>';
+            echo '<td>'.$sRedirect->getLast()->getLocation().'</td>'; // last redirect
+            if ($sRedirect->hasHTTPS())
+                echo '<td><span class="badge bg-success">YES</span></td>';
+            else
+                echo '<td><span class="badge bg-danger">NO</span></td>';
+            if ($sRedirect->redirectsToAnotherSite())
+                echo '<td><span class="badge bg-danger">NO</span></td>';
+            else
+                echo '<td><span class="badge bg-success">YES</span></td>';
+            echo '<td><span class="bi bi-chevron-down"></span></td></tr>';
+            foreach ($sRedirect->getAll() as $key => $value) {
+                echo '<tr class="collapse accordion-collapse bg-secondary" id="subDomain">';
+                echo '<th scope="row">'.$value->getFrom().'</th>';
+                echo '<td>'.$value->getLocation().'</td>';
+                if ($value->getHasHTTPS())
+                    echo '<td><span class="badge bg-success">YES</span></td>';
+                else
+                    echo '<td><span class="badge bg-danger">NO</span></td>';
+                if ($value->getAbroad())
+                    echo '<td><span class="badge bg-danger">NO</span></td>';
+                else
+                    echo '<td colspan="2"><span class="badge bg-success">YES</span></td>';
+                echo "</tr>";
+            }
+        } else {
+            echo '<tr class="bg-danger-subtle">
+            <th scope="row">http://' . $subdomain->getDomain() . '</th>
+            <td colspan="4">NOT FOUND</td>
+            </tr>';
+        }
+    ?>
+        <?php 
+        if (count($rRedirect->getAll()) > 0) {
+            echo '<tr data-bs-toggle="collapse" data-bs-target="#otherDomain">';
+            echo '<th scope="row">'.$rRedirect->getFirst()->getFrom().'</th>';
+            echo '<td>'.$rRedirect->getLast()->getLocation().'</td>'; // last redirect
+            if ($rRedirect->hasHTTPS())
+                echo '<td><span class="badge bg-success">YES</span></td>';
+            else
+                echo '<td><span class="badge bg-danger">NO</span></td>';
+            if ($rRedirect->redirectsToAnotherSite())
+                echo '<td><span class="badge bg-danger">NO</span></td>';
+            else
+                echo '<td><span class="badge bg-success">YES</span></td>';
+            echo '<td><span class="bi bi-chevron-down"></span></td></tr>';
+            foreach ($rRedirect->getAll() as $key => $value) {
+                echo '<tr class="collapse accordion-collapse bg-secondary" id="otherDomain">';
+                echo '<th scope="row">'.$value->getFrom().'</th>';
+                echo '<td>'.$value->getLocation().'</td>';
+                if ($value->getHasHTTPS())
+                    echo '<td><span class="badge bg-success">YES</span></td>';
+                else
+                    echo '<td><span class="badge bg-danger">NO</span></td>';
+                if ($value->getAbroad())
+                    echo '<td><span class="badge bg-danger">NO</span></td>';
+                else
+                    echo '<td colspan="2"><span class="badge bg-success">YES</span></td>';
+                echo "</tr>";
+            }
+        } else {
+            echo '<tr class="bg-danger-subtle">
+            <th scope="row">http://' . $mainDomain->getDomain() . '/random/url</th>
+            <td colspan="4">NOT FOUND</td>
+            </tr>';
+        }
+    ?>
+    </tbody>
+</table>

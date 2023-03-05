@@ -13,10 +13,10 @@ class Redirection
 
     private bool $https = false;
 
-    public function __construct(private Domain $domain, string $path = "")
+    public function __construct(private string $domain, string $path = "")
     {
         $this->ch = curl_init();
-        $location = 'http://' . $domain->getHostname() . $path;
+        $location = 'http://' . $domain . $path;
         while ($location != null) {
             $redirect = $this->getCurlHeaders($location);
             if (strcmp($redirect->getLocation(), '') !== 0) {
@@ -32,7 +32,7 @@ class Redirection
         curl_close($this->ch);
 
         $this->checkHttps();
-        $this->checkRedirects($domain->getHostname());
+        $this->checkRedirects($domain);
     }
 
     public function getAll(): array
@@ -87,7 +87,7 @@ class Redirection
 
     public function getCurlHeaders(string $url): Redirect
     {
-        $domain = str_replace('www.', '', $this->domain->getHostname());
+        $domain = str_replace('www.', '', $this->domain);
         $red = new Redirect($domain);
         $red->setFrom($url);
         //$this->ch = curl_init();
