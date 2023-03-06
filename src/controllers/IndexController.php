@@ -12,6 +12,7 @@ class IndexController
 {
     public function index()
     {
+        $version = App::VERSION;
         $domainName = $this->parseDomain($_GET['lookup']);
         $mainDomain = new MainDomainComponent($domainName);
         $db = App::$app->getDb();
@@ -62,6 +63,7 @@ class IndexController
 
     public function form()
     {
+        $version = App::VERSION;
         $mainDomain = new MainDomainComponent("");
         include __DIR__."/../../template/body.html";
     }

@@ -7,6 +7,8 @@ use App\Controller\IndexController;
 class App
 {
 
+    const VERSION = "0.2.1";
+
     public static $app;
 
     private ?Database $db;
@@ -45,5 +47,4 @@ class App
 	public function getDb(): Database|null {
 		return $this->db;
 	}
-	
 }

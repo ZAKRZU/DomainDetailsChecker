@@ -1,6 +1,4 @@
 <?php
-define('VERSION', '0.2.0');
-
 define('SSL_WARNING_DAYS', 30);
 
 define('DB_SERVER', '');
