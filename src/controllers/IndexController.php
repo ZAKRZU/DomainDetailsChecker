@@ -30,7 +30,10 @@ class IndexController
                     if (strcmp($_SESSION['lastDomain'], $domainName) !== 0) {
                         $manager->add($dEntity);
                     }
+                } else {
+                    $manager->add($dEntity);
                 }
+                
                 $_SESSION['lastDomain'] = $domainName;
             }
 
