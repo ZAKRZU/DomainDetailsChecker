@@ -13,9 +13,9 @@ class MainDomainComponent extends DomainComponent
     {
         parent::__construct($domain);
         $this->setSubdomain(null);
+        $this->fetchDNS();
         $this->setNsRecords($this->hasNSRecords());
         if ($this->getNsRecords()) {
-            $this->fetchDNS();
             $this->setSubdomain(new DomainComponent('www.'.$this->getDomain()));
             $this->getSubdomain()->fetchDNS();
         }
@@ -40,7 +40,7 @@ class MainDomainComponent extends DomainComponent
      * @return boolean
      */
     public function exist(): bool {
-        return $this->getNsRecords() ? true : false;
+        return ($this->getNsRecords() || $this->getDns()) ? true : false;
     }
 
 	/**

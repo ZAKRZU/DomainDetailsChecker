@@ -13,10 +13,16 @@ class DomainRedirect
 
     private array $redirects;
 
-    public function __construct(private DomainComponent $domain, private string $path = '')
+    public function __construct(private ?DomainComponent $domain, private string $path = '')
     {
         $this->curl = RedirectManager::getCurlHandle();
-        $this->lastLocation = 'http://' . $domain->getDomain() . $path;
+        
+        if ($domain !== null)
+            $this->lastLocation = 'http://' . $domain->getDomain() . $path;
+        else {
+            $this->lastLocation = null;
+        }
+
         $this->redirects = [];
 
         while ($this->lastLocation) {
