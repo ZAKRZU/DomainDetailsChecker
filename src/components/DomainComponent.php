@@ -18,6 +18,8 @@ class DomainComponent
 	
 	public function fetchDNS(): void
 	{
+		if (strcmp($this->getDomain(), '') === 0)
+			return;
 		$records = dns_get_record($this->getDomain(), DNS_A);
 		if ($records) {
 			$dns = new DnsComponent();
