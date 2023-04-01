@@ -21,10 +21,6 @@ foreach (glob("src/managers/*.php") as $filename) {
     include_once($filename);
 }
 
-foreach (glob("src/legacy/*.php") as $filename) {
-    include_once($filename);
-}
-
 function loadConfiguration() {
     if (file_exists('src/configuration.php')) {
         include_once('src/configuration.php');

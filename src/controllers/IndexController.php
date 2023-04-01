@@ -7,11 +7,15 @@ use App\Component\SSLComponent;
 use App\Component\WordpressComponent;
 use App\Entity\DomainEntity;
 use App\Manager\DomainChecker;
+use App\Manager\RedirectManager;
 
 class IndexController
 {
     public function index()
     {
+        /*
+        * This variables are provided to template to render page
+        */
         $version = App::VERSION;
         $domainName = $this->parseDomain($_GET['lookup']);
         $mainDomain = new MainDomainComponent($domainName);
@@ -39,11 +43,12 @@ class IndexController
 
             $subdomain = $mainDomain->getSubdomain();
             $ssl = new SSLComponent($domainName);
-            $mRedirect = new \Redirection($domainName);
-            $sRedirect = new \Redirection($subdomain->getDomain());
-            $rRedirect = new \Redirection($domainName, '/random/url');
+            $redirectManager = new RedirectManager($mainDomain);
+            $mRedirect = $redirectManager->getMainDomain();
+            $sRedirect = $redirectManager->getSubDomain();
+            $rRedirect = $redirectManager->getDomainWithPath();
 
-            $wp = new WordpressComponent($mRedirect, $domainName);
+            $wp = new WordpressComponent($redirectManager->getMainDomain(), $domainName);
         }
 
         include __DIR__."/../../template/body.html";

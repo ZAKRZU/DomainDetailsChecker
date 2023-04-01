@@ -7,11 +7,11 @@ class WordpressComponent
 
     private bool $rss = false;
 
-    public function __construct(\Redirection $redirection, String $domain)
+    public function __construct(DomainRedirect $redirection, String $domain)
     {
-        foreach ($redirection->getAll() as $key => $value) {
-            if (isset($value->getAdditional()['x-redirect-by'])) {
-                $xRedirectBy = $value->getAdditional()['x-redirect-by'];
+        foreach ($redirection->getRedirects() as $key => $value) {
+            if (isset($value->getAdditionalHeaders()['x-redirect-by'])) {
+                $xRedirectBy = $value->getAdditionalHeaders()['x-redirect-by'];
                 if (strcmp(strtolower($xRedirectBy), 'wordpress') === 0) {
                     $this->xRedirectByWordpress = true;
                 }
@@ -35,7 +35,7 @@ class WordpressComponent
         return $this->rss;
     }
 
-    public function lookForRSS(string $domain)
+    public function lookForRSS(string $domain) // TODO: Move to curl
     {
         $fp = fopen('https://'.$domain.'/wp-content/plugins/really-simple-ssl/', 'r');
         try {
@@ -49,7 +49,6 @@ class WordpressComponent
             if (str_starts_with($value, 'HTTP/1.1'))
             {
                 $val = intval(substr($value, 9, 3));
-                // if ($val)
                 return $val;
             }
 
