@@ -50,6 +50,16 @@ class DomainRedirect
         return $this->redirects[count($this->redirects) - 1];
     }
 
+    public function getDomain(): DomainComponent
+    {
+        return $this->domain;
+    }
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
     public function loadRedirect(): Redirect
     {
         $redirect = new Redirect($this->lastLocation);

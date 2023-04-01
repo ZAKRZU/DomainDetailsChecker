@@ -2,8 +2,8 @@
 
 namespace App\Manager;
 
-use App\Component\DomainComponent;
 use App\Component\DomainRedirect;
+use App\Component\MainDomainComponent;
 
 class RedirectManager
 {
@@ -16,12 +16,11 @@ class RedirectManager
 
     private DomainRedirect $domainWithPath;
 
-    public function __construct(DomainComponent $domain)
+    public function __construct(MainDomainComponent $domain)
     {
         $this->mainDomain = new DomainRedirect($domain);
 
-        $subdomain = new DomainComponent('www.'.$domain->getDomain());
-        $this->subDomain = new DomainRedirect($subdomain);
+        $this->subDomain = new DomainRedirect($domain->getSubdomain());
 
         $this->domainWithPath = new DomainRedirect($domain, '/random/url/');
     }
