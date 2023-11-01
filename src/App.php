@@ -7,7 +7,7 @@ use App\Controller\IndexController;
 class App
 {
 
-    const VERSION = "0.3.0";
+    const VERSION = "0.4.0_DEV";
 
     public static $app;
 
@@ -40,6 +40,11 @@ class App
             $this->db = null;
     }
 
+    public static function Log($something) {
+        print_r("<pre>");
+        print_r($something);
+        print_r("</pre>");
+    }
 
 	/**
 	 * @return Database|null

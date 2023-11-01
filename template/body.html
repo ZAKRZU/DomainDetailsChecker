@@ -23,27 +23,25 @@
         <div class="mb-3 px-5">
             <?php 
                 include 'form.html';
-                if (isset($db) && $mainDomain->exist()) {
+                if (isset($db) && $mainDomain->dnsZoneExist()) {
                     include 'checked.html';
                 }
             ?>
         </div>
         <div class="row">
             <?php
-                if ($mainDomain->exist()) {
+                if ($mainDomain->dnsZoneExist()) {
                     include 'dns.html';
-                    if ($mainDomain->getDns()) {
-                        include 'ssl.html';
-                    }
-                } else if (strlen($mainDomain->getDomain()) > 0) {
-                    echo    '<div class="row m-3 alert alert-danger">
-                                <span>BAD DOMAIN</span>
-                            </div>';
+                    include 'ssl.html';
+                } else if (strlen($mainDomain->getDomainName() > 0)) {
+                    echo '<div class="row m-3 alert alert-danger">
+                            <span>DNS ZONE DOES NOT EXIST</span>
+                        </div>';
                 }
             ?>
         </div>
         <?php 
-            if ($mainDomain->exist()) {
+            if ($mainDomain->dnsZoneExist()) {
                 echo "<hr>";
                 echo '<div class="row">';
                 include 'redirect.html';

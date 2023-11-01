@@ -5,44 +5,43 @@
             <b>A</b>
             <div class="container">
                 <?php 
-                    if ($mainDomain->getDns()) {
-                        echo '<div class="row py-2 border-bottom bg-success-subtle">';
+                    if ($mainDomain->dnsZoneExist()) {
+                        echo '<div class="row py-2 border-bottom bg-success-subtle">
+                                <div class="col">'.$mainDomain->getDomainName().'</div>
+                                <div class="col">'.$mainDomain->getDNSZone()->getARecord()['ip'].'</div>
+                                <div class="col">'.$mainDomain->getDNSZone()->getARecord()['reverse'].'</div>
+                              </div>';
                     } else {
-                        echo '<div class="row py-2 border-bottom bg-danger-subtle">';
+                        echo '<div class="row py-2 border-bottom bg-danger-subtle">
+                                <div class="col">'.$mainDomain->getDomainName().'</div>
+                                <div class="col">Not found</div>
+                              </div>';
                     }
-                        echo '<div class="col">'.$mainDomain->getDomain().'</div>';
-                        if ($mainDomain->getDns()) {
-                            echo '<div class="col">'.$mainDomain->getDns()->getRecordA().'</div>';
-                            echo '<div class="col">'.$mainDomain->getDns()->getRevDns().'</div>';
-                        } else {
-                            echo '<div class="col">Not found</div>';
-                        }
-                    echo '</div>';
 
-                    if ($subdomain->getDns()) {
-                        echo '<div class="row py-2 bg-success-subtle">';
+                    if ($subDomain->dnsZoneExist()) {
+                        echo '<div class="row py-2 border-bottom bg-success-subtle">
+                                <div class="col">'.$subDomain->getDomainName().'</div>
+                                <div class="col">'.$subDomain->getDNSZone()->getARecord()['ip'].'</div>
+                                <div class="col">'.$subDomain->getDNSZone()->getARecord()['reverse'].'</div>
+                              </div>';
                     } else {
-                        echo '<div class="row py-2 bg-danger-subtle">';
+                        echo '<div class="row py-2 border-bottom bg-danger-subtle">
+                                <div class="col">'.$subDomain->getDomainName().'</div>
+                                <div class="col">Not found</div>
+                              </div>';
                     }
-                        echo '<div class="col">'.$subdomain->getDomain().'</div>';
-                        if ($subdomain->getDns()) {
-                            echo '<div class="col">'.$subdomain->getDns()->getRecordA().'</div>';
-                            echo '<div class="col">'.$subdomain->getDns()->getRevDns().'</div>';
-                        } else {
-                            echo '<div class="col">Not found</div>';
-                        }
-                    echo '</div>';
+
                 ?>
             </div>
             <hr>
             <b>NS</b>
             <div class="d-flex gap-2 px-3">
                 <?php 
-                    if ($mainDomain->getNsRecords())
-                    foreach ($mainDomain->getNsRecords() as $key => $value) {
-                        echo "<p>".$value['target']."</p>";
-                    }
-                    else {
+                    if ($mainDomain->getDNSZone()->countNSRecords() > 0) {
+                        foreach ($mainDomain->getDNSZone()->getNSRecords() as $key => $nsRecord) {
+                            echo "<p>".$nsRecord['host']."</p>";
+                        }
+                    } else {
                         echo "Nameservers not found";
                     }
                 ?>

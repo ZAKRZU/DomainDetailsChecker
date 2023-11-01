@@ -3,7 +3,7 @@
 namespace App\Manager;
 
 use App\Component\DomainRedirect;
-use App\Component\MainDomainComponent;
+use App\Component\DomainInfo;
 
 class RedirectManager
 {
@@ -16,11 +16,11 @@ class RedirectManager
 
     private DomainRedirect $domainWithPath;
 
-    public function __construct(MainDomainComponent $domain)
+    public function __construct(DomainInfo $domain, DomainInfo $subDomain)
     {
         $this->mainDomain = new DomainRedirect($domain);
 
-        $this->subDomain = new DomainRedirect($domain->getSubdomain());
+        $this->subDomain = new DomainRedirect($subDomain);
 
         $this->domainWithPath = new DomainRedirect($domain, '/random/url/');
     }
