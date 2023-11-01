@@ -1,17 +1,30 @@
 <div class="col-lg-6">
     <div class="card">
         <?php 
-
-        if ($ssl->getDaysNumber() > 0 & $ssl->getDaysNumber() < SSL_WARNING_DAYS) {
-            echo    '<div class="card-header bg-warning-subtle bg-gradient"><b>SSL</b></div>
-                     <div class="card-body bg-warning-subtle">';
-        } else if ($ssl->getDaysNumber() < 1) {
-            echo    '<div class="card-header bg-danger-subtle bg-gradient"><b>SSL</b></div>
-                     <div class="card-body bg-danger-subtle">';
+        if ($ssl->issuedByLetsEncrypt()) {
+            if ($ssl->getDaysNumber() > 0 & $ssl->getDaysNumber() < SSL_WARNING_DAYS) {
+                echo    '<div class="card-header bg-info-subtle bg-gradient"><b>SSL (Let\'s Encrypt)</b></div>
+                         <div class="card-body bg-warning-subtle">';
+            } else if ($ssl->getDaysNumber() < 1) {
+                echo    '<div class="card-header bg-info-subtle bg-gradient"><b>SSL (Let\'s Encrypt)</b></div>
+                         <div class="card-body bg-danger-subtle">';
+            } else {
+                echo    '<div class="card-header bg-info-subtle bg-gradient"><b>SSL (Let\'s Encrypt)</b></div>
+                         <div class="card-body bg-success-subtle">';
+            }
         } else {
-            echo    '<div class="card-header bg-success-subtle bg-gradient"><b>SSL</b></div>
-                     <div class="card-body bg-success-subtle">';
+            if ($ssl->getDaysNumber() > 0 & $ssl->getDaysNumber() < SSL_WARNING_DAYS) {
+                echo    '<div class="card-header bg-warning-subtle bg-gradient"><b>SSL</b></div>
+                         <div class="card-body bg-warning-subtle">';
+            } else if ($ssl->getDaysNumber() < 1) {
+                echo    '<div class="card-header bg-danger-subtle bg-gradient"><b>SSL</b></div>
+                         <div class="card-body bg-danger-subtle">';
+            } else {
+                echo    '<div class="card-header bg-success-subtle bg-gradient"><b>SSL</b></div>
+                         <div class="card-body bg-success-subtle">';
+            }
         }
+
         ?>
             <div class="d-flex flex-column gap-2 ">
                     <div class="row">

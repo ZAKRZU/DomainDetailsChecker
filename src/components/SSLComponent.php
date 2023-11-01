@@ -65,4 +65,13 @@ class SSLComponent
         $interval = $today->diff($to);
         return intval($interval->format('%R%a'));
     }
+
+    public function issuedByLetsEncrypt(): bool
+    {
+        if (str_contains($this->issuer, "Let' Encrypt"))
+            return true;
+        if (str_contains($this->issuer, "US Let's Encrypt R3"))
+            return true;
+        return false;
+    }
 }
