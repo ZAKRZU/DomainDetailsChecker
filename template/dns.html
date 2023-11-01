@@ -33,6 +33,37 @@
 
                 ?>
             </div>
+            <?php 
+                if ($mainDomain->getDNSZone()->countTXTRecords() > 0) {
+                    // echo '<hr>';
+                    echo '<div class="accordion mt-3" id="accordionTXT">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRecords">';
+                                        if ($hasGivenTXT) {
+                                            echo '<h6>TXT Records ('.$mainDomain->getDNSZone()->countTXTRecords().') <span class="badge bg-success">Validation TXT Found!</span></h6>';
+                                        } else {
+                                            echo '<h6>TXT Records ('.$mainDomain->getDNSZone()->countTXTRecords().')</h6>';
+                                        }
+                    echo           '</button>
+                                </h2>
+                                <div id="collapseRecords" class="accordion-collapse collapse" data-bs-parrent="#accordionTXT">
+                                    <div class="accordion-body">
+                                        <ul class="list-group list-group-flush">';
+                                            foreach ($mainDomain->getDNSZone()->getTXTRecords() as $key => $txtRecord) {
+                                                if (strcmp($txtRecord, $txtLookup) === 0) {
+                                                    echo '<li class="list-group-item list-group-item-primary">'.$txtRecord.'</li>';
+                                                } else {
+                                                    echo '<li class="list-group-item">'.$txtRecord.'</li>';
+                                                }
+                                            }
+                    echo               '</ul>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>';
+                }
+            ?>
             <hr>
             <b>NS</b>
             <div class="d-flex gap-2 px-3">

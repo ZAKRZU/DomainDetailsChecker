@@ -176,7 +176,7 @@ class DnsZone
     {
         if ($this->countTXTRecords() > 0) {
             $allTxts = $this->getTXTRecords();
-            if (array_search($lookingFor, $allTxts) != false)
+            if (array_search($lookingFor, $allTxts) !== false)
                 return true;
         }
         return false;

@@ -19,6 +19,10 @@ class IndexController
         /*
         * This variables are provided for template rendering
         */
+        $txtLookup = "";
+        if (isset($_GET['txt'])) {
+            $txtLookup = $_GET['txt'];
+        }
         $notSafeDomain = $_GET['lookup'];
         $safeDomainName = $this->parseDomain($notSafeDomain);
         $mainDomain = new DomainInfo($safeDomainName);
@@ -42,6 +46,7 @@ class IndexController
                 
                 $_SESSION['lastDomain'] = $mainDomain->getDomainName();
             }
+            $hasGivenTXT = $mainDomain->getDNSZone()->hasTXTRecord($txtLookup);
             $subDomain = new DomainInfo('www.'.$safeDomainName);
             $ssl = new SSLComponent($mainDomain->getDomainName());
             $redirectManager = new RedirectManager($mainDomain, $subDomain);
