@@ -4,7 +4,7 @@ namespace App\Component;
 
 class Redirect
 {
-    
+
     private string $redirectedTo;
 
     private int $requestCode;
@@ -53,6 +53,11 @@ class Redirect
         $this->additionalHeaders[$name] = $value;
     }
 
+    public function addAdditionalHeaderList(string $name, array $value): void
+    {
+        $this->additionalHeaders[$name] = $value;
+    }
+
     public function hasHTTPS(): bool
     {
         if (strcmp(parse_url($this->redirectedTo, PHP_URL_SCHEME), 'https') === 0)
@@ -70,5 +75,4 @@ class Redirect
         else
             return true;
     }
-
 }

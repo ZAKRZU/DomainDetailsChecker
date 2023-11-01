@@ -13,10 +13,12 @@ class DomainRedirect
 
     private array $redirects;
 
+    private array $allHeaders;
+
     public function __construct(private ?DomainInfo $domain, private string $path = '')
     {
         $this->curl = RedirectManager::getCurlHandle();
-        
+
         if ($domain !== null)
             $this->lastLocation = 'http://' . $domain->getDomainName() . $path;
         else {
@@ -24,14 +26,18 @@ class DomainRedirect
         }
 
         $this->redirects = [];
+        $this->allHeaders = [];
 
         while ($this->lastLocation) {
             $redirect = $this->loadRedirect();
             $this->lastLocation = $redirect->getRedirectedTo();
+            array_push($this->allHeaders, $redirect);
+
             if (strcmp($this->lastLocation, '') === 0) {
                 $this->lastLocation = null;
                 break;
             }
+
             $this->redirects[count($this->redirects)] = $redirect;
         }
     }
@@ -49,6 +55,11 @@ class DomainRedirect
     public function getRedirects(): array
     {
         return $this->redirects;
+    }
+
+    public function getAllHeaders(): array
+    {
+        return $this->allHeaders;
     }
 
     public function getLastRedirect(): Redirect
@@ -95,7 +106,14 @@ class DomainRedirect
                     continue;
                 list($key, $value) = explode(': ', $line);
 
-                $nheader[strtolower($key)] = $value;
+                if (strcmp($key, 'link') === 0) {
+                    if (!isset($nheader['link'])) {
+                        $nheader['link'] = [];
+                    }
+                    array_push($nheader['link'], $value);
+                } else {
+                    $nheader[strtolower($key)] = $value;
+                }
             }
 
         $code = str_replace('HTTP/1.0 ', '', $nheader['http_code']);
@@ -114,6 +132,11 @@ class DomainRedirect
         if (isset($nheader['x-redirect-by'])) {
             $redirect->addAdditionalHeader('x-redirect-by', $nheader['x-redirect-by']);
         }
+
+        if (isset($nheader['link'])) {
+            $redirect->addAdditionalHeaderList('link', $nheader['link']);
+        }
+
         return $redirect;
     }
 }

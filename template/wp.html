@@ -1,27 +1,64 @@
 <div class="d-flex flex-column">
     <h2>WEBSITE DETAILS</h2>
-    <div class="row border-bottom border-top py-2">
-        <div class="col">IS WORDPRESS</div>
-        <div class="col">
-            <?php 
-            if ($wp->isWordpress()) {
-                echo '<span class="badge bg-success">YES</span>';
-            } else {
-                echo '<span class="badge bg-danger">NO EVIDENCE FOUND</span>';
-            }
-            ?>
+    <div class="accordion accordion-flush border-bottom" id="accordionWp">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed row" type="button" data-bs-toggle="collapse" data-bs-target="#wordpress">
+                    <div class="col">IS WORDPRESS</div>
+                    <div class="col">
+                        <?php 
+                            if ($wp->isWordpress()) {
+                                echo '<span class="badge bg-success">YES</span>';
+                            } else {
+                                echo '<span class="badge bg-danger">NO EVIDENCE FOUND</span>';
+                            }
+                        ?>
+                    </div>
+                </button>
+            </h2>
+            <div id="wordpress" class="accordion-collapse collapse" data-bs-parent="#accordionWp">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col"><span class="badge bg-primary">HTTP Header</span> x-redirect-by: Wordpress</div>
+                        <div class="col">
+                            <?php
+                                if ($wp->getXRedirectByWordpress()) {
+                                    echo '<span class="badge bg-success">YES</span>';
+                                } else {
+                                    echo '<span class="badge bg-danger">NOT FOUND</span>';
+                                }
+                            ?>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col"><span class="badge bg-primary">HTTP Header</span> WP Rest Link</div>
+                        <div class="col">
+                            <?php
+                                if ($wp->hasLinkToWpRest()) {
+                                    echo '<span class="badge bg-success">YES</span>';
+                                } else {
+                                    echo '<span class="badge bg-danger">NOT FOUND</span>';
+                                }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row border-bottom py-2">
-        <div class="col">REALLY SIMPLE SSL</div>
-        <div class="col">
-            <?php 
-            if ($wp->hasRSS()) {
-                echo '<span class="badge bg-success">YES</span>';
-            } else {
-                echo '<span class="badge bg-danger">NOT FOUND</span>';
-            }
-            ?>
+    <div class="border-bottom py-2">
+        <div class="row m-2">
+            <div class="col">REALLY SIMPLE SSL</div>
+            <div class="col me-5">
+                <?php 
+                if ($wp->hasRSS()) {
+                    echo '<span class="badge bg-success">YES</span>';
+                } else {
+                    echo '<span class="badge bg-danger">NOT FOUND</span>';
+                }
+                ?>
+            </div>
         </div>
     </div>
 </div>

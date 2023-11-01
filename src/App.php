@@ -7,7 +7,7 @@ use App\Controller\IndexController;
 class App
 {
 
-    const VERSION = "0.4.0 INDEV";
+    const VERSION = "0.4.0";
 
     public static $app;
 
