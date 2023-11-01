@@ -37,7 +37,9 @@ class WordpressComponent
 
     public function lookForRSS(string $domain) // TODO: Move to curl
     {
+        set_error_handler(function() { /* ignore errrors by now */ });
         $fp = fopen('https://'.$domain.'/wp-content/plugins/really-simple-ssl/', 'r');
+        restore_error_handler();
         try {
             $headers = stream_get_meta_data($fp)['wrapper_data'];
         } catch (\TypeError $th) {
