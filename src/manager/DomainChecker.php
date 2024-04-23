@@ -1,9 +1,9 @@
 <?php
-namespace App\Manager;
+namespace Zakrzu\DDC\Manager;
 
-use App\App;
-use App\Component\Database;
-use App\Entity\DomainEntity;
+use Zakrzu\DDC\App;
+use Zakrzu\DDC\Component\Database;
+use Zakrzu\DDC\Entity\DomainEntity;
 
 class DomainChecker
 {

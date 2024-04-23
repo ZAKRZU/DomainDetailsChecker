@@ -1,13 +1,13 @@
 <?php
-namespace App\Controller;
+namespace Zakrzu\DDC\Controller;
 
-use App\App;
-use App\Component\SSLComponent;
-use App\Component\WordpressComponent;
-use App\Component\DomainInfo;
-use App\Entity\DomainEntity;
-use App\Manager\DomainChecker;
-use App\Manager\RedirectManager;
+use Zakrzu\DDC\App;
+use Zakrzu\DDC\Component\SSLComponent;
+use Zakrzu\DDC\Component\WordpressComponent;
+use Zakrzu\DDC\Component\DomainInfo;
+use Zakrzu\DDC\Entity\DomainEntity;
+use Zakrzu\DDC\Manager\DomainChecker;
+use Zakrzu\DDC\Manager\RedirectManager;
 
 class IndexController
 {

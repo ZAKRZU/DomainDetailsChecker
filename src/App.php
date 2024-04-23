@@ -1,13 +1,13 @@
 <?php 
-namespace App;
+namespace Zakrzu\DDC;
 
-use App\Component\Database;
-use App\Controller\IndexController;
+use Zakrzu\DDC\Component\Database;
+use Zakrzu\DDC\Controller\IndexController;
 
 class App
 {
 
-    const VERSION = "0.4.0";
+    const VERSION = "0.5.x-dev";
 
     public static $app;
 
@@ -23,6 +23,7 @@ class App
     public function preInit(): void
     {
         session_start();
+        $this->loadConfiguration();
         if (!(DB_NAME && DB_PASS && DB_NAME))
         {
             $this->db = null;
@@ -47,4 +48,14 @@ class App
 	public function getDb(): Database|null {
 		return $this->db;
 	}
+
+    private function loadConfiguration() {
+        if (file_exists('src/configuration.php')) {
+            include_once('src/configuration.php');
+        } else {
+            copy('src/configuration.default.php', 'src/configuration.php');
+            include_once('src/configuration.php');
+        }
+    }
+
 }

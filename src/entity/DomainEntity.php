@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace Zakrzu\DDC\Entity;
 
 class DomainEntity
 {

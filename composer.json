@@ -1,0 +1,19 @@
+{
+    "name": "zakrzu/domain-details-checker",
+    "description": "A tool that allows you to quickly check domain information and SSL integration",
+    "type": "project",
+    "license": "GNU GPLv3",
+    "autoload": {
+        "psr-4": {
+            "Zakrzu\\DDC\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ZAKRZU",
+            "email": "mznicko655@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}

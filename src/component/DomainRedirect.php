@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Component;
+namespace Zakrzu\DDC\Component;
 
-use App\Manager\RedirectManager;
+use Zakrzu\DDC\Manager\RedirectManager;
 
 class DomainRedirect
 {

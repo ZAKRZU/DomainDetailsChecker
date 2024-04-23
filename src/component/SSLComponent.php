@@ -1,5 +1,5 @@
 <?php
-namespace App\Component;
+namespace Zakrzu\DDC\Component;
 
 class SSLComponent
 {
