@@ -1,10 +1,9 @@
 <div class="row">
-    <?php 
-    if ($counter > 1)
-        echo "<span>This domain has been checked ". $counter." times. Last time was ". $lastTime ."</span>";
-    else if ($counter === 1)
-        echo "<span>This domain has been checked ". $counter ." time. Last time was ". $lastTime ."</span>";
-    else
-        echo "<span>This domain has not been checked yet!</span>";
+    <?php if ($counter > 1) ?>
+        <span>This domain has been checked <?php echo $counter ?> times. Last time was <?php echo $lastTime ?> </span>
+    <?php else if ($counter === 1) ?>
+        <span>This domain has been checked <?php $counter ?> time. Last time was <?php echo $lastTime ?> </span>
+    <?php else ?>
+        <span>This domain has not been checked yet!</span>
     ?>
 </div>

@@ -11,50 +11,62 @@ use App\Manager\RedirectManager;
 
 class IndexController
 {
+    private $version = App::VERSION;
+    private $db = null;
+    private ?DomainInfo $mainDomain = null;
+    private string $txtLookup = "";
+
+    public function __construct()
+    {
+        $this->db = App::$app->getDb();
+
+        if (isset($_GET["txt"])) {
+            $this->txtLookup = $_GET["txt"];
+        }
+
+        if (isset($_GET["lookup"])) {
+            $this->mainDomain = new DomainInfo($this->parseDomain($_GET["lookup"]));
+            $this->index();
+        } else {
+            $this->form();
+        }
+    }
+
     public function index()
     {
-        $version = App::VERSION;
-        $db = App::$app->getDb();
-
         /*
         * This variables are provided for template rendering
         */
-        $txtLookup = "";
-        if (isset($_GET['txt'])) {
-            $txtLookup = $_GET['txt'];
-        }
-        $notSafeDomain = $_GET['lookup'];
-        $safeDomainName = $this->parseDomain($notSafeDomain);
-        $mainDomain = new DomainInfo($safeDomainName);
-        if ($mainDomain->dnsZoneExist()) {
-            if ($db) {
+        if ($this->mainDomain->dnsZoneExist()) {
+            if ($this->db) {
                 $manager = new DomainChecker();
-                $dEntity = new DomainEntity($mainDomain->getDomainName(), 'now');
-                $counter = $manager->countDomain($mainDomain->getDomainName());
+                $dEntity = new DomainEntity($this->mainDomain->getDomainName(), 'now');
+                $counter = $manager->countDomain($this->mainDomain->getDomainName());
                 if ($counter > 0)
-                    $lastTime = $manager->getLastDomain($mainDomain->getDomainName())->getDate()->format('d F Y');
+                    $lastTime = $manager->getLastDomain($this->mainDomain->getDomainName())->getDate()->format('d F Y');
                 else
                     $lastTime = null;
 
                 if (isset($_SESSION['lastDomain'])) {
-                    if (strcmp($_SESSION['lastDomain'], $mainDomain->getDomainName()) !== 0) {
+                    if (strcmp($_SESSION['lastDomain'], $this->mainDomain->getDomainName()) !== 0) {
                         $manager->add($dEntity);
                     }
                 } else {
                     $manager->add($dEntity);
                 }
                 
-                $_SESSION['lastDomain'] = $mainDomain->getDomainName();
+                $_SESSION['lastDomain'] = $this->mainDomain->getDomainName();
             }
-            $hasGivenTXT = $mainDomain->getDNSZone()->hasTXTRecord($txtLookup);
-            $subDomain = new DomainInfo('www.'.$safeDomainName);
-            $ssl = new SSLComponent($mainDomain->getDomainName());
-            $redirectManager = new RedirectManager($mainDomain, $subDomain);
+
+            $hasGivenTXT = $this->mainDomain->getDNSZone()->hasTXTRecord($this->txtLookup);
+            $subDomain = new DomainInfo('www.'.$this->mainDomain->getDomainName());
+            $ssl = new SSLComponent($this->mainDomain->getDomainName());
+            $redirectManager = new RedirectManager($this->mainDomain, $subDomain);
             $mRedirect = $redirectManager->getMainDomain();
             $sRedirect = $redirectManager->getSubDomain();
             $rRedirect = $redirectManager->getDomainWithPath();
 
-            $wp = new WordpressComponent($redirectManager->getMainDomain(), $mainDomain->getDomainName());
+            $wp = new WordpressComponent($redirectManager->getMainDomain(), $this->mainDomain->getDomainName());
         }
 
         include __DIR__."/../../template/body.html";
@@ -76,8 +88,6 @@ class IndexController
 
     public function form()
     {
-        $version = App::VERSION;
-        $mainDomain = new DomainInfo("");
         include __DIR__."/../../template/body.html";
     }
 

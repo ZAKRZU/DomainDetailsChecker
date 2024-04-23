@@ -18,11 +18,6 @@ class App
         App::$app = $this;
         $this->preInit();
         $index = new IndexController();
-        if (isset($_GET['lookup'])) {
-            $index->index();
-        } else {
-            $index->form();
-        }
     }
 
     public function preInit(): void

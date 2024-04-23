@@ -6,13 +6,11 @@
                 <button class="accordion-button collapsed row" type="button" data-bs-toggle="collapse" data-bs-target="#wordpress">
                     <div class="col">IS WORDPRESS</div>
                     <div class="col">
-                        <?php 
-                            if ($wp->isWordpress()) {
-                                echo '<span class="badge bg-success">YES</span>';
-                            } else {
-                                echo '<span class="badge bg-danger">NO EVIDENCE FOUND</span>';
-                            }
-                        ?>
+                        <?php if ($wp->isWordpress()) { ?>
+                                <span class="badge bg-success">YES</span>
+                        <?php } else { ?>
+                                <span class="badge bg-danger">NO EVIDENCE FOUND</span>
+                        <?php } ?>
                     </div>
                 </button>
             </h2>
@@ -21,26 +19,22 @@
                     <div class="row">
                         <div class="col"><span class="badge bg-primary">HTTP Header</span> x-redirect-by: Wordpress</div>
                         <div class="col">
-                            <?php
-                                if ($wp->getXRedirectByWordpress()) {
-                                    echo '<span class="badge bg-success">YES</span>';
-                                } else {
-                                    echo '<span class="badge bg-danger">NOT FOUND</span>';
-                                }
-                            ?>
+                        <?php if ($wp->getXRedirectByWordpress()) { ?>
+                                <span class="badge bg-success">YES</span>
+                        <?php } else { ?>
+                                <span class="badge bg-danger">NOT FOUND</span>
+                        <?php } ?>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col"><span class="badge bg-primary">HTTP Header</span> WP Rest Link</div>
                         <div class="col">
-                            <?php
-                                if ($wp->hasLinkToWpRest()) {
-                                    echo '<span class="badge bg-success">YES</span>';
-                                } else {
-                                    echo '<span class="badge bg-danger">NOT FOUND</span>';
-                                }
-                            ?>
+                        <?php if ($wp->hasLinkToWpRest()) { ?>
+                                <span class="badge bg-success">YES</span>
+                        <?php } else { ?>
+                                <span class="badge bg-danger">NOT FOUND</span>
+                        <?php } ?>
                         </div>
                     </div>
                 </div>
@@ -51,13 +45,11 @@
         <div class="row m-2">
             <div class="col">REALLY SIMPLE SSL</div>
             <div class="col me-5">
-                <?php 
-                if ($wp->hasRSS()) {
-                    echo '<span class="badge bg-success">YES</span>';
-                } else {
-                    echo '<span class="badge bg-danger">NOT FOUND</span>';
-                }
-                ?>
+            <?php if ($wp->hasRSS()) { ?>
+                    <span class="badge bg-success">YES</span>
+            <?php } else { ?>
+                    <span class="badge bg-danger">NOT FOUND</span>
+            <?php } ?>
             </div>
         </div>
     </div>
