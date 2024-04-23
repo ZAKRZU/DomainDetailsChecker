@@ -1,0 +1,52 @@
+<div class="mt-3 mb-3">
+    <div class="card">
+        <div class="card-header">
+            WHOIS for <?php echo $domainWhois->domainName; ?>
+            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#whoisModal">
+                Raw WHOIS
+            </button>
+        </div>
+        <div class="card-body d-flex flex-column gap-2">
+            <div class="row">
+                <div class="col">Domain creation date</div>
+                <div class="col"><?php echo date('Y-m-d H:i:s', $domainWhois->creationDate); ?></div>
+            </div> 
+             <div class="row">
+                <div class="col">Domain expiration date</div>
+                <div class="col"><?php echo date('Y-m-d H:i:s', $domainWhois->expirationDate); ?></div>
+            </div>
+            <div class="row">
+                <div class="col">Domain last update date</div>
+                <div class="col"><?php echo date('Y-m-d H:i:s', $domainWhois->updatedDate); ?></div>
+            </div>
+            <div class="row">
+                <div class="col">DNSSEC</div>
+                <div class="col"><?php echo $domainWhois->dnssec; ?></div>
+            </div>
+             <div class="row">
+                <div class="col">Nameservers</div>
+                <div class="col"><?php foreach($domainWhois->nameServers as $ns) echo $ns . ", "; ?></div>
+            </div>       
+        </div>
+        <div class="modal fade" id="whoisModal" tabindex="-1" aria-labelledby="whoisModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="max-width: 1000px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="whoisModalLabel">
+                            WHOIS DATA
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body font-monospace">
+                        <pre>
+                            <?php echo $domainWhoisRaw ?>
+                        </pre>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+

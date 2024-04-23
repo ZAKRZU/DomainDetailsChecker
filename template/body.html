@@ -43,6 +43,13 @@
                       </div>
             <?php } ?>
         </div>
+
+        <?php if (!$this->domainIsAvailable) { ?>
+        <div class="row">
+            <?php include 'whois.html'; ?>
+        </div>
+        <?php } ?>
+
         <?php if ($this->mainDomain && $this->mainDomain->dnsZoneExist()) { ?>
         <hr>
         <div class="row">
