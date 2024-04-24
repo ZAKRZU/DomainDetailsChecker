@@ -20,9 +20,14 @@ class IndexController
     private string $txtLookup = "";
     private ?Whois $whois = null;
     private bool $domainIsAvailable = true;
+    private array $templateOverrides = [];
+    private array $hooks = [];
 
-    public function __construct()
+    public function __construct(array $overrides = [], array $hooks = [])
     {
+        $this->initTemplate();
+        $this->loadOverrides($overrides);
+        $this->hooks = $hooks;
         $this->db = App::$app->getDb();
         $this->whois = Factory::get()->createWhois();
 
@@ -98,9 +103,32 @@ class IndexController
         return trim($parsedName);
     }
 
+    public function getTemplate(string $name): string {
+        if (isset($this->templateOverrides[$name])) {
+            return $this->templateOverrides[$name];
+        }
+        return "";
+    }
+
+    public function getHook(string $name) {
+        if (isset($this->hooks[$name])) {
+            include $this->hooks[$name];
+        }
+        return "";
+    }
+
     public function form()
     {
         include __DIR__."/../../template/body.html";
     }
 
+    public function initTemplate():void {
+        $this->templateOverrides['dns'] = __DIR__."/../../template/dns.html";
+    }
+    
+    public function loadOverrides(array $overrides) {
+        foreach($overrides as $name => $value) {
+            $this->templateOverrides[$name] = $value;
+        }
+    }
 }

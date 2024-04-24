@@ -34,7 +34,8 @@
         <div class="row">
             <?php
                  if ($this->mainDomain && $this->mainDomain->dnsZoneExist()) {
-                    include 'dns.html';
+                    //include 'dns.html';
+                    include $this->getTemplate('dns');
                     include 'ssl.html';
                  } else if ($this->mainDomain && strlen($this->mainDomain->getDomainName() > 0)) { 
             ?>
@@ -55,10 +56,11 @@
         <div class="row">
         <?php     
             include 'redirect.html';
-            include 'wp.html'; 
+            include 'wp.html';
         ?>
         </div>
         <?php } ?>
+        <?php $this->getHook('bottom'); ?>
         <footer class="text-center m-5">&copy; 2022-2024 Zakrzu@<a href="https://github.com/ZAKRZU/DomainDetailsChecker" >Github</a></footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 

@@ -13,17 +13,22 @@ class App
 
     private ?Database $db;
 
+    private array $overrides = [];
+
+    private array $hooks = [];
+
     public function __construct()
     {
         App::$app = $this;
         $this->preInit();
-        $index = new IndexController();
+        $index = new IndexController($this->overrides, $this->hooks);
     }
 
     public function preInit(): void
     {
         session_start();
         $this->loadConfiguration();
+        $this->loadExtensions();
         if (!(DB_NAME && DB_PASS && DB_NAME))
         {
             $this->db = null;
@@ -56,6 +61,22 @@ class App
             copy('src/configuration.default.php', 'src/configuration.php');
             include_once('src/configuration.php');
         }
+    }
+
+    public function addOverride(string $name, string $value) {
+        $this->overrides[$name] = $value;
+    }
+
+    public function addHook(string $name, string $value) {
+        $this->hooks[$name] = $value;
+    }
+
+    public function loadExtensions() {
+        foreach(glob("extensions/*") as $folder) {
+            foreach(glob($folder.'/*.php') as $script) {
+                include $script;
+            }
+        } 
     }
 
 }
