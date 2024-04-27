@@ -4,15 +4,16 @@
             <label for="lookup" class="form-label lead">Type domain name you want to check:</label>
             <div class="position-relative">
                 <input id="lookup" type="text" name="lookup" class="form-control" value="<?php if ($this->mainDomain) echo $this->mainDomain->getDomainName() ?>">
-                <div id="loading" class="position-absolute top-50 end-0 translate-middle-y d-none">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col-auto align-self-end">
-            <input id="sendButton" type="submit" class="btn btn-primary" value="Check">
+            <button id="sendButton" type="submit" class="btn btn-primary">
+                <span id="loading-org">Check</span>
+                <div id="loading" class="d-none">
+                    <span class="spinner-border spinner-border-sm"></span>
+                    <span role="status">Loading...</span>
+                </div>
+            </button>
         </div>
     </div>
 </form>

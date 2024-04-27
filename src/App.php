@@ -47,12 +47,12 @@ class App
         print_r("</pre>");
     }
 
-	/**
-	 * @return Database|null
-	 */
-	public function getDb(): Database|null {
-		return $this->db;
-	}
+    /**
+     * @return Database|null
+     */
+    public function getDb(): Database|null {
+        return $this->db;
+    }
 
     private function loadConfiguration() {
         if (file_exists('src/configuration.php')) {

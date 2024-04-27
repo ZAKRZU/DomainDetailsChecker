@@ -37,8 +37,12 @@ themeSelector.onchange = () => {
 var sendButton = document.getElementById('sendButton');
 sendButton.onclick = () => {
     let loading = document.getElementById('loading');
-    if (loading.classList.contains('d-none'))
+    let btnValue = document.getElementById('loading-org');
+    if (loading.classList.contains('d-none')) {
         loading.classList.remove('d-none');
+        btnValue.classList.add('d-none');
+        sendButton.classList.add('disabled');
+    }
 }
 
 var copyToClipboardButton = document.getElementById('copyButton');
