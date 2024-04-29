@@ -5,56 +5,54 @@
             <b>A</b>
             <div class="container">
                 <?php 
-                 if ($this->mainDomain->dnsZoneExist()) {
+                 if ($this->mainDomain->getDns()) {
                         echo '<div class="row py-2 border-bottom bg-success-subtle">
                             <div class="col">'.$this->mainDomain->getDomainName().'</div>
-                            <div class="col">'.$this->mainDomain->getDNSZone()->getARecord()['ip'].'</div>
-                            <div class="col">'.$this->mainDomain->getDNSZone()->getARecord()['reverse'].'</div>
+                            <div class="col">'.$this->mainDomain->getDns()->A[0]->getValue().'</div>
+                            <div class="col">'.$this->mainDomain->getDns()->A[0]->getReverseAddr().'</div>
                             </div>';
                     } else {
                         echo '<div class="row py-2 border-bottom bg-danger-subtle">
-    -                            <div class="col">'.$this->mainDomain->getDomainName().'</div>
-                                <div class="col">Not found</div>
+                                <div class="col">'. $this->mainDomain->getLastErrorMessage() .'</div>
                               </div>';
                     }
 
-                    if ($subDomain->dnsZoneExist()) {
+                    if ($subDomain->getDns()) {
                         echo '<div class="row py-2 border-bottom bg-success-subtle">
                                 <div class="col">'.$subDomain->getDomainName().'</div>
-                                <div class="col">'.$subDomain->getDNSZone()->getARecord()['ip'].'</div>
-                                <div class="col">'.$subDomain->getDNSZone()->getARecord()['reverse'].'</div>
+                                <div class="col">'.$subDomain->getDns()->A[0]->getValue().'</div>
+                                <div class="col">'.$subDomain->getDns()->A[0]->getReverseAddr().'</div>
                               </div>';
                     } else {
                         echo '<div class="row py-2 border-bottom bg-danger-subtle">
-                                <div class="col">'.$subDomain->getDomainName().'</div>
-                                <div class="col">Not found</div>
+                                <div class="col">'. $subDomain->getLastErrorMessage() .'</div>
                               </div>';
                     }
 
                 ?>
             </div>
             <?php 
-                    if ($this->mainDomain->getDNSZone()->countTXTRecords() > 0) {
+                    if ($TXTCount > 0) {
                     // echo '<hr>';
                     echo '<div class="accordion mt-3" id="accordionTXT">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRecords">';
                                         if ($hasGivenTXT) {
-                                            echo '<h6>TXT Records ('.$this->mainDomain->getDNSZone()->countTXTRecords().') <span class="badge bg-success">Validation TXT Found!</span></h6>';
+                                            echo '<h6>TXT Records ('.$TXTCount.') <span class="badge bg-success">Validation TXT Found!</span></h6>';
                                         } else {
-                                            echo '<h6>TXT Records ('.$this->mainDomain->getDNSZone()->countTXTRecords().')</h6>';
+                                            echo '<h6>TXT Records ('.$TXTCount.')</h6>';
                                         }
                     echo           '</button>
                                 </h2>
                                 <div id="collapseRecords" class="accordion-collapse collapse" data-bs-parrent="#accordionTXT">
                                     <div class="accordion-body">
                                         <ul class="list-group list-group-flush">';
-                                            foreach ($this->mainDomain->getDNSZone()->getTXTRecords() as $key => $txtRecord) {
-                                                if (strcmp($txtRecord, $this->txtLookup) === 0) {
-                                                    echo '<li class="list-group-item list-group-item-primary">'.$txtRecord.'</li>';
+                                            foreach ($this->mainDomain->getDns()->TXT as $key => $txtRecord) {
+                                                if (strcmp($txtRecord->getValue(), $this->txtLookup) === 0) {
+                                                    echo '<li class="list-group-item list-group-item-primary">'.$txtRecord->getValue().'</li>';
                                                 } else {
-                                                    echo '<li class="list-group-item">'.$txtRecord.'</li>';
+                                                    echo '<li class="list-group-item">'.$txtRecord->getValue().'</li>';
                                                 }
                                             }
                     echo               '</ul>
@@ -68,10 +66,10 @@
             <b>NS</b>
             <div class="d-flex gap-2 px-3 flex-wrap">
                 <?php 
-                     if ($this->mainDomain->getDNSZone()->countNSRecords() > 0) {
-                     foreach ($this->mainDomain->getDNSZone()->getNSRecords() as $key => $nsRecord) {
-                            echo "<p>".$nsRecord['host']."</p>";
-                        }
+                     if ($NSCount > 0) {
+                         foreach ($this->mainDomain->getDns()->NS as $key => $nsRecord) {
+                             echo "<p>".$nsRecord->getValue()."</p>";
+                         }
                     } else {
                         echo "Nameservers not found";
                     }

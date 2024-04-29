@@ -50,7 +50,7 @@ class IndexController
         /*
         * This variables are provided for template rendering
         */
-        if ($this->mainDomain->dnsZoneExist()) {
+        if ($this->mainDomain->getDns()) {
             if (!$this->domainIsAvailable) {
                 $domainWhois = $this->whois->loadDomainInfo($this->mainDomain->getDomainName());
                 $domainWhoisRaw = $this->whois->lookupDomain($this->mainDomain->getDomainName())->text;
@@ -75,8 +75,20 @@ class IndexController
                 $_SESSION['lastDomain'] = $this->mainDomain->getDomainName();
             }
 
-            $hasGivenTXT = $this->mainDomain->getDNSZone()->hasTXTRecord($this->txtLookup);
+            $hasGivenTXT = $this->mainDomain->getDns()->hasTXT($this->txtLookup);
             $subDomain = new DomainInfo('www.'.$this->mainDomain->getDomainName());
+            $TXTCount = 0;
+            $NSCount = 0;
+            if ($this->mainDomain->getDns()) {
+                $TXTCount = count($this->mainDomain->getDns()->TXT);
+            } else if ($subDomain->getDns()) {
+                $TXTCount = count($subDomain->getDns()->TXT);
+            }
+            if ($this->mainDomain->getDns()) {
+                $NSCount = count($this->mainDomain->getDns()->NS);
+            } else if ($subDomain->getDns()) {
+                $NSCount = count($subDomain->getDns()->NS);
+            }
             $ssl = new SSLComponent($this->mainDomain->getDomainName());
             $redirectManager = new RedirectManager($this->mainDomain, $subDomain);
             $mRedirect = $redirectManager->getMainDomain();

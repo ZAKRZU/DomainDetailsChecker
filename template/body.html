@@ -26,14 +26,14 @@
         <div class="mb-3 px-5">
             <?php 
                 include 'form.html';
-                if (isset($db) && $this->mainDomain->dnsZoneExist()) {
+                if (isset($db) && $this->mainDomain->getDns()) {
                     include 'checked.html';
                 }
             ?>
         </div>
         <div class="row">
             <?php
-                 if ($this->mainDomain && $this->mainDomain->dnsZoneExist()) {
+                 if ($this->mainDomain && $this->mainDomain->getDns()) {
                     //include 'dns.html';
                     include $this->getTemplate('dns');
                     include 'ssl.html';
@@ -51,7 +51,7 @@
         </div>
         <?php } ?>
 
-        <?php if ($this->mainDomain && $this->mainDomain->dnsZoneExist()) { ?>
+        <?php if ($this->mainDomain && $this->mainDomain->getDns()) { ?>
         <hr>
         <div class="row">
         <?php     

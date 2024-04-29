@@ -2,6 +2,11 @@
 
 namespace Zakrzu\DDC\Component;
 
+use Zakrzu\DDC\App;
+
+use Zakrzu\DDC\Exceptions\DnsException;
+use Zakrzu\DDC\Modules\Dns\DnsZone;
+
 class DomainInfo
 {
 
@@ -17,7 +22,9 @@ class DomainInfo
      *
      * @var DnsZone|null
      */
-    private ?DnsZone $dnsZone;
+    private ?DnsZone $dns = null;
+
+    private string $lastError = "";
 
     /**
      * Creates new domain information instance
@@ -27,7 +34,11 @@ class DomainInfo
     public function __construct(string $domainName)
     {
         $this->domainName = $domainName;
-        $this->dnsZone = new DnsZone($this->getDomainName());
+        try {
+            $this->dns = App::$app->getDnsModule()->dig($this->getDomainName());
+        } catch (DnsException $e) {
+            $this->lastError = $e->getMessage();
+        }
     }
 
     /**
@@ -40,23 +51,13 @@ class DomainInfo
         return $this->domainName;
     }
 
-    /**
-     * Returns DNS zone
-     *
-     * @return DnsZone|null
-     */
-    public function getDNSZone(): ?DnsZone
+    public function getDns(): ?DnsZone
     {
-        return $this->dnsZone;
+        return $this->dns;
     }
 
-    /**
-     * Returns whether the DNS zone exist
-     *
-     * @return boolean
-     */
-    public function dnsZoneExist(): bool
+    public function getLastErrorMessage(): string
     {
-        return $this->getDNSZone()->haveAnyDNSRecords();
+        return $this->lastError;
     }
 }

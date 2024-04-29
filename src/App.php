@@ -4,6 +4,11 @@ namespace Zakrzu\DDC;
 use Zakrzu\DDC\Component\Database;
 use Zakrzu\DDC\Controller\IndexController;
 
+use Zakrzu\DDC\Modules\Module;
+use Zakrzu\DDC\Modules\Dns\DnsModule;
+
+use Zakrzu\DDC\Exceptions\ModuleException;
+
 class App
 {
 
@@ -17,6 +22,8 @@ class App
 
     private array $hooks = [];
 
+    private array $modules = [];
+
     public function __construct()
     {
         App::$app = $this;
@@ -28,6 +35,7 @@ class App
     {
         session_start();
         $this->loadConfiguration();
+        $this->initModules();
         $this->loadExtensions();
         if (!(DB_NAME && DB_PASS && DB_NAME))
         {
@@ -39,6 +47,22 @@ class App
             $this->db = $connectionDb;
         else
             $this->db = null;
+    }
+
+    public function initModules() {
+        try {
+            $this->modules["dns"] = new DnsModule();
+        } catch (ModuleException $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    public function getModuleByName(string $name): ?Module {
+        return $this->modules[$name] ?? null;
+    }
+
+    public function getDnsModule(): ?DnsModule {
+        return $this->getModuleByName("dns") ?? null;
     }
 
     public static function Log($something) {
