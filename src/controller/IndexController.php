@@ -69,7 +69,7 @@ class IndexController
                 $hasTXT = $activeDomain->getDns()->hasTXT($txtLookup);
             }
 
-            $db = $this->getDbVars($activeDomain);
+            $db = $this->getDbVars($domainName);
 
             $dns = [
                 "txt_count" => count($activeDomain->getDns()->TXT),
@@ -105,27 +105,27 @@ class IndexController
         ]);
     }
 
-    public function getDbVars(DomainInfo $activeDomain): array
+    public function getDbVars(DomainInfo $domain): array
     {
         $ret = [];
-        if ($this->db && $activeDomain) {
+        if ($this->db && $domain) {
             $manager = new DomainChecker();
-            $dEntity = new DomainEntity($this->mainDomain->getDomainName(), 'now');
-            $ret["counter"] = $manager->countDomain($this->mainDomain->getDomainName());
+            $dEntity = new DomainEntity($domain->getDomainName(), 'now');
+            $ret["counter"] = $manager->countDomain($domain->getDomainName());
             if ($ret["counter"] > 0)
-                $ret["lastTime"] = $manager->getLastDomain($this->mainDomain->getDomainName())->getDate()->format('d F Y');
+                $ret["lastTime"] = $manager->getLastDomain($domain->getDomainName())->getDate()->format('d F Y');
             else
                 $ret["lastTime"] = null;
 
             if (isset($_SESSION['lastDomain'])) {
-                if (strcmp($_SESSION['lastDomain'], $this->mainDomain->getDomainName()) !== 0) {
+                if (strcmp($_SESSION['lastDomain'], $domain->getDomainName()) !== 0) {
                     $manager->add($dEntity);
                 }
             } else {
                 $manager->add($dEntity);
             }
             
-            $_SESSION['lastDomain'] = $this->mainDomain->getDomainName();
+            $_SESSION['lastDomain'] = $domain->getDomainName();
         }
         return $ret;
     }
