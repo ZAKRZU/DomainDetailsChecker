@@ -69,7 +69,7 @@ class IndexController
                 $hasTXT = $activeDomain->getDns()->hasTXT($txtLookup);
             }
 
-            $db = $this->getDbVars($domainName);
+            $db = $this->getDbVars($mainDomain);
 
             $dns = [
                 "txt_count" => count($activeDomain->getDns()->TXT),
