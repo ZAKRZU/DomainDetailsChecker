@@ -3,7 +3,8 @@
         <div class="col">
             <label for="lookup" class="form-label lead">Type domain name you want to check:</label>
             <div class="position-relative">
-                <input id="lookup" type="text" name="lookup" class="form-control" value="<?php if ($this->mainDomain) echo $this->mainDomain->getDomainName() ?>">
+                <input id="lookup" type="text" name="lookup" class="form-control"
+                    value="<?php if ($this->vars->domain_name) echo $this->vars->domain_name ?>">
             </div>
         </div>
         <div class="col-auto align-self-end">

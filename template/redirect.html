@@ -10,7 +10,7 @@
     </thead>
     <tbody>
         <?php 
-        $redList = [$mRedirect, $sRedirect, $rRedirect];
+        $redList = [$this->vars->main_redirect, $this->vars->sub_redirect, $this->vars->rRedirect];
 
         foreach ($redList as $redKey => $red) {
             if (count($red->getRedirects()) > 0) {

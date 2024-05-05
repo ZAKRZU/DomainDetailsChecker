@@ -20,24 +20,24 @@
                 </select>
             </div>
             <div class="col-auto align-self-center">
-                <span><?php echo $this->version ?></span>
+                <span><?php echo $this->vars->app_version ?></span>
             </div>
         </div>
         <div class="mb-3 px-5">
             <?php 
                 include 'form.html';
-                if (isset($db) && $this->mainDomain->getDns()) {
+                 if ($this->vars->db) {
                     include 'checked.html';
                 }
             ?>
         </div>
         <div class="row">
             <?php
-                 if ($this->mainDomain && $this->mainDomain->getDns()) {
+                 if ($this->vars->active_domain) {
                     //include 'dns.html';
-                    include $this->getTemplate('dns');
+                    include $this->getTemplate('dns.html');
                     include 'ssl.html';
-                 } else if ($this->mainDomain && strlen($this->mainDomain->getDomainName() > 0)) { 
+                 } else if ($this->vars->domain_name) { 
             ?>
                       <div class="row m-3 alert alert-danger">
                           <span>DNS ZONE DOES NOT EXIST</span>
@@ -45,13 +45,23 @@
             <?php } ?>
         </div>
 
-        <?php if (!$this->domainIsAvailable) { ?>
+        <?php if ($this->vars->whois_info) { ?>
         <div class="row">
             <?php include 'whois.html'; ?>
         </div>
+        <?php } else if($this->vars->domain_name) { ?>
+        <div class="row">
+              <div class="row m-3 alert alert-danger">
+                  <?php if(strlen($this->vars->whois_raw) > 0) { ?>
+                    <span>WHOIS SERVER RESPONSE:<br> <?php echo trim($this->vars->whois_raw); ?></span>
+                  <?php } else { ?>
+                    <span>NO WHOIS INFO FOR <?php echo $this->vars->domain_name; ?></span>
+                  <?php  }?>
+              </div>
+        </div>
         <?php } ?>
 
-        <?php if ($this->mainDomain && $this->mainDomain->getDns()) { ?>
+        <?php if ($this->vars->active_domain) { ?>
         <hr>
         <div class="row">
         <?php     

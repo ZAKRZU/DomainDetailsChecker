@@ -6,7 +6,7 @@
                 <button class="accordion-button collapsed row" type="button" data-bs-toggle="collapse" data-bs-target="#wordpress">
                     <div class="col">IS WORDPRESS</div>
                     <div class="col">
-                        <?php if ($wp->isWordpress()) { ?>
+                        <?php if ($this->vars->wp->isWordpress()) { ?>
                                 <span class="badge bg-success">YES</span>
                         <?php } else { ?>
                                 <span class="badge bg-danger">NO EVIDENCE FOUND</span>
@@ -19,7 +19,7 @@
                     <div class="row">
                         <div class="col"><span class="badge bg-primary">HTTP Header</span> x-redirect-by: Wordpress</div>
                         <div class="col">
-                        <?php if ($wp->getXRedirectByWordpress()) { ?>
+                        <?php if ($this->vars->wp->getXRedirectByWordpress()) { ?>
                                 <span class="badge bg-success">YES</span>
                         <?php } else { ?>
                                 <span class="badge bg-danger">NOT FOUND</span>
@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col"><span class="badge bg-primary">HTTP Header</span> WP Rest Link</div>
                         <div class="col">
-                        <?php if ($wp->hasLinkToWpRest()) { ?>
+                        <?php if ($this->vars->wp->hasLinkToWpRest()) { ?>
                                 <span class="badge bg-success">YES</span>
                         <?php } else { ?>
                                 <span class="badge bg-danger">NOT FOUND</span>
@@ -45,7 +45,7 @@
         <div class="row m-2">
             <div class="col">REALLY SIMPLE SSL</div>
             <div class="col me-5">
-            <?php if ($wp->hasRSS()) { ?>
+            <?php if ($this->vars->wp->hasRSS()) { ?>
                     <span class="badge bg-success">YES</span>
             <?php } else { ?>
                     <span class="badge bg-danger">NOT FOUND</span>

@@ -2,103 +2,132 @@
 namespace Zakrzu\DDC\Controller;
 
 use Zakrzu\DDC\App;
+
 use Zakrzu\DDC\Component\SSLComponent;
 use Zakrzu\DDC\Component\WordpressComponent;
 use Zakrzu\DDC\Component\DomainInfo;
+
 use Zakrzu\DDC\Entity\DomainEntity;
+
 use Zakrzu\DDC\Manager\DomainChecker;
 use Zakrzu\DDC\Manager\RedirectManager;
+
+use Zakrzu\DDC\Modules\Template\TemplateView;
 
 use Iodev\Whois\Factory;
 use Iodev\Whois\Whois;
 
 class IndexController
 {
-    private $version = App::VERSION;
     private $db = null;
-    private ?DomainInfo $mainDomain = null;
-    private string $txtLookup = "";
     private ?Whois $whois = null;
-    private bool $domainIsAvailable = true;
-    private array $templateOverrides = [];
-    private array $hooks = [];
 
-    public function __construct(array $overrides = [], array $hooks = [])
+    public function __construct()
     {
-        $this->initTemplate();
-        $this->loadOverrides($overrides);
-        $this->hooks = $hooks;
         $this->db = App::$app->getDb();
         $this->whois = Factory::get()->createWhois();
+    }
 
-        if (isset($_GET["txt"])) {
-            $this->txtLookup = $_GET["txt"];
-        }
-
+    public function getView(): ?TemplateView
+    {
         if (isset($_GET["lookup"])) {
-            $parsed = $this->parseDomain($_GET["lookup"]);
-            $this->mainDomain = new DomainInfo($parsed);
-            $this->domainIsAvailable = $this->whois->isDomainAvailable($parsed);
-            $this->index();
+            return $this->index();
         } else {
-            $this->form();
+            return $this->form();
         }
     }
 
-    public function index()
+    public function index(): TemplateView
     {
-        /*
-        * This variables are provided for template rendering
-        */
-        if ($this->mainDomain->getDns()) {
-            if (!$this->domainIsAvailable) {
-                $domainWhois = $this->whois->loadDomainInfo($this->mainDomain->getDomainName());
-                $domainWhoisRaw = $this->whois->lookupDomain($this->mainDomain->getDomainName())->text;
-            }
-            if ($this->db) {
-                $manager = new DomainChecker();
-                $dEntity = new DomainEntity($this->mainDomain->getDomainName(), 'now');
-                $counter = $manager->countDomain($this->mainDomain->getDomainName());
-                if ($counter > 0)
-                    $lastTime = $manager->getLastDomain($this->mainDomain->getDomainName())->getDate()->format('d F Y');
-                else
-                    $lastTime = null;
+        $activeDomain = null;
+        $txtLookup = "";
+        $hasTXT = false;
+        $db = null;
+        $dns = null;
+        $ssl = null;
+        $redirectManager = null; 
+        $mRedirect = null; 
+        $sRedirect = null; 
+        $rRedirect = null;
+        $wp = null;
 
-                if (isset($_SESSION['lastDomain'])) {
-                    if (strcmp($_SESSION['lastDomain'], $this->mainDomain->getDomainName()) !== 0) {
-                        $manager->add($dEntity);
-                    }
-                } else {
-                    $manager->add($dEntity);
-                }
-                
-                $_SESSION['lastDomain'] = $this->mainDomain->getDomainName();
+        $domainName = $this->parseDomain($_GET["lookup"]);
+        $mainDomain = new DomainInfo($domainName);
+        $subDomain = new DomainInfo("www." . $domainName);
+
+        if (strlen($mainDomain->getLastErrorMessage()) < 1)
+            $activeDomain = $mainDomain;
+        else if (strlen($subDomain->getLastErrorMessage()) < 1)
+            $activeDomain = $subDomain;
+
+        $whoisInfo = $this->whois->loadDomainInfo($domainName) ?? null;
+        $whoisRaw = $this->whois->lookupDomain($domainName)->text ?? null;
+
+        if ($activeDomain) {
+            if (isset($_GET["txt"])) {
+                $txtLookup = $_GET["txt"];
+                $hasTXT = $activeDomain->getDns()->hasTXT($txtLookup);
             }
 
-            $hasGivenTXT = $this->mainDomain->getDns()->hasTXT($this->txtLookup);
-            $subDomain = new DomainInfo('www.'.$this->mainDomain->getDomainName());
-            $TXTCount = 0;
-            $NSCount = 0;
-            if ($this->mainDomain->getDns()) {
-                $TXTCount = count($this->mainDomain->getDns()->TXT);
-            } else if ($subDomain->getDns()) {
-                $TXTCount = count($subDomain->getDns()->TXT);
-            }
-            if ($this->mainDomain->getDns()) {
-                $NSCount = count($this->mainDomain->getDns()->NS);
-            } else if ($subDomain->getDns()) {
-                $NSCount = count($subDomain->getDns()->NS);
-            }
-            $ssl = new SSLComponent($this->mainDomain->getDomainName());
-            $redirectManager = new RedirectManager($this->mainDomain, $subDomain);
+            $db = $this->getDbVars($activeDomain);
+
+            $dns = [
+                "txt_count" => count($activeDomain->getDns()->TXT),
+                "ns_count" => count($activeDomain->getDns()->NS),
+            ];
+
+            $ssl = new SSLComponent($activeDomain->getDomainName());
+
+            $redirectManager = new RedirectManager($mainDomain, $subDomain);
             $mRedirect = $redirectManager->getMainDomain();
             $sRedirect = $redirectManager->getSubDomain();
             $rRedirect = $redirectManager->getDomainWithPath();
 
-            $wp = new WordpressComponent($redirectManager->getMainDomain(), $this->mainDomain->getDomainName());
+            $wp = new WordpressComponent($redirectManager->getMainDomain(), $activeDomain->getDomainName());
         }
 
-        include __DIR__."/../../template/body.html";
+        return new TemplateView("body.html", [
+            "domain_name" => $domainName,
+            "active_domain" => $activeDomain,
+            "main_domain" => $mainDomain,
+            "sub_domain" => $subDomain,
+            "db" => $db,
+            "dns" => $dns,
+            "txt_lookup" => $txtLookup,
+            "has_txt" => $hasTXT,
+            "ssl" => $ssl,
+            "whois_info" => $whoisInfo,
+            "whois_raw" => $whoisRaw,
+            "main_redirect" => $mRedirect,
+            "sub_redirect" => $sRedirect,
+            "rRedirect" => $rRedirect,
+            "wp" => $wp,
+        ]);
+    }
+
+    public function getDbVars(DomainInfo $activeDomain): array
+    {
+        $ret = [];
+        if ($this->db && $activeDomain) {
+            $manager = new DomainChecker();
+            $dEntity = new DomainEntity($this->mainDomain->getDomainName(), 'now');
+            $ret["counter"] = $manager->countDomain($this->mainDomain->getDomainName());
+            if ($ret["counter"] > 0)
+                $ret["lastTime"] = $manager->getLastDomain($this->mainDomain->getDomainName())->getDate()->format('d F Y');
+            else
+                $ret["lastTime"] = null;
+
+            if (isset($_SESSION['lastDomain'])) {
+                if (strcmp($_SESSION['lastDomain'], $this->mainDomain->getDomainName()) !== 0) {
+                    $manager->add($dEntity);
+                }
+            } else {
+                $manager->add($dEntity);
+            }
+            
+            $_SESSION['lastDomain'] = $this->mainDomain->getDomainName();
+        }
+        return $ret;
     }
 
     public function parseDomain(string $domain): string
@@ -115,32 +144,9 @@ class IndexController
         return trim($parsedName);
     }
 
-    public function getTemplate(string $name): string {
-        if (isset($this->templateOverrides[$name])) {
-            return $this->templateOverrides[$name];
-        }
-        return "";
-    }
-
-    public function getHook(string $name) {
-        if (isset($this->hooks[$name])) {
-            include $this->hooks[$name];
-        }
-        return "";
-    }
-
-    public function form()
+    public function form(): TemplateView
     {
-        include __DIR__."/../../template/body.html";
+        return new TemplateView('body.html');
     }
 
-    public function initTemplate():void {
-        $this->templateOverrides['dns'] = __DIR__."/../../template/dns.html";
-    }
-    
-    public function loadOverrides(array $overrides) {
-        foreach($overrides as $name => $value) {
-            $this->templateOverrides[$name] = $value;
-        }
-    }
 }

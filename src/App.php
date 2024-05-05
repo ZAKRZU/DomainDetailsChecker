@@ -2,10 +2,15 @@
 namespace Zakrzu\DDC;
 
 use Zakrzu\DDC\Component\Database;
+
 use Zakrzu\DDC\Controller\IndexController;
 
 use Zakrzu\DDC\Modules\Module;
+use Zakrzu\DDC\Modules\ModuleType;
+
 use Zakrzu\DDC\Modules\Dns\DnsModule;
+
+use Zakrzu\DDC\Modules\Template\TemplateModule;
 
 use Zakrzu\DDC\Exceptions\ModuleException;
 
@@ -18,17 +23,14 @@ class App
 
     private ?Database $db;
 
-    private array $overrides = [];
-
-    private array $hooks = [];
-
     private array $modules = [];
 
     public function __construct()
     {
         App::$app = $this;
         $this->preInit();
-        $index = new IndexController($this->overrides, $this->hooks);
+        $index = new IndexController();
+        $this->getTemplateModule()->display($index->getView());
     }
 
     public function preInit(): void
@@ -49,23 +51,33 @@ class App
             $this->db = null;
     }
 
-    public function initModules() {
+    public function initModules(): void
+    {
         try {
             $this->modules["dns"] = new DnsModule();
+            $this->modules["template"] = new TemplateModule();
         } catch (ModuleException $e) {
             echo $e->getMessage();
         }
     }
 
-    public function getModuleByName(string $name): ?Module {
+    public function getModuleByName(string $name): ?Module
+    {
         return $this->modules[$name] ?? null;
     }
 
-    public function getDnsModule(): ?DnsModule {
-        return $this->getModuleByName("dns") ?? null;
+    public function getDnsModule(): ?DnsModule
+    {
+        return $this->getModuleByName(ModuleType::DNS) ?? null;
     }
 
-    public static function Log($something) {
+    public function getTemplateModule(): ?TemplateModule
+    {
+        return $this->getModuleByName(ModuleType::TEMPLATE) ?? null;
+    }
+
+    public static function Log($something): void
+    {
         print_r("<pre>");
         print_r($something);
         print_r("</pre>");
@@ -74,11 +86,13 @@ class App
     /**
      * @return Database|null
      */
-    public function getDb(): Database|null {
+    public function getDb(): Database|null
+    {
         return $this->db;
     }
 
-    private function loadConfiguration() {
+    private function loadConfiguration(): void
+    {
         if (file_exists('src/configuration.php')) {
             include_once('src/configuration.php');
         } else {
@@ -87,15 +101,8 @@ class App
         }
     }
 
-    public function addOverride(string $name, string $value) {
-        $this->overrides[$name] = $value;
-    }
-
-    public function addHook(string $name, string $value) {
-        $this->hooks[$name] = $value;
-    }
-
-    public function loadExtensions() {
+    public function loadExtensions(): void
+    {
         foreach(glob("extensions/*") as $folder) {
             foreach(glob($folder.'/*.php') as $script) {
                 include $script;

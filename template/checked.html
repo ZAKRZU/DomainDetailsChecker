@@ -1,8 +1,8 @@
 <div class="row">
-    <?php if ($counter > 1) ?>
-        <span>This domain has been checked <?php echo $counter ?> times. Last time was <?php echo $lastTime ?> </span>
-    <?php else if ($counter === 1) ?>
-        <span>This domain has been checked <?php $counter ?> time. Last time was <?php echo $lastTime ?> </span>
+    <?php if ($this->vars->db["counter"] > 1) ?>
+        <span>This domain has been checked <?php echo $this->vars->db["counter"]; ?> times. Last time was <?php echo $this->vars->db["lastTime"]; ?> </span>
+    <?php else if ($this->vars->db["counter"] === 1) ?>
+        <span>This domain has been checked <?php $this->vars->db["counter"]; ?> time. Last time was <?php echo $this->db["lastTime"] ?> </span>
     <?php else ?>
         <span>This domain has not been checked yet!</span>
     ?>
