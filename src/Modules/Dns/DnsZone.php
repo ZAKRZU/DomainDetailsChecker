@@ -27,7 +27,7 @@ class DnsZone implements \JsonSerializable
     public function hasTXT(string $text): bool
     {
         foreach ($this->__get("TXT") as $record) {
-            if (strcmp($text, $record->getValue() == 0))
+            if (strcmp($text, $record->getValue()) == 0)
                 return true;
         }
         return false;
