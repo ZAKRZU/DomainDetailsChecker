@@ -60,7 +60,10 @@ class Redirect
 
     public function hasHTTPS(): bool
     {
-        if (strcmp(parse_url($this->redirectedTo, PHP_URL_SCHEME), 'https') === 0)
+        $parsed = parse_url($this->redirectedTo, PHP_URL_SCHEME);
+        if (!$parsed)
+            return false;
+        if (strcmp($parsed, 'https') === 0)
             return true;
         else
             return false;
@@ -69,7 +72,10 @@ class Redirect
     public function isAbroad(): bool
     {
         $pureDomain = str_replace('www.', '', parse_url($this->from, PHP_URL_HOST));
-        $pureRedirected = str_replace('www.', '', parse_url($this->redirectedTo, PHP_URL_HOST));
+        $parsed = parse_url($this->redirectedTo, PHP_URL_HOST);
+        if (!$parsed)
+            return true;
+        $pureRedirected = str_replace('www.', '', $parsed);
         if (strcmp($pureDomain, $pureRedirected) === 0)
             return false;
         else

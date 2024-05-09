@@ -15,6 +15,8 @@ class DomainRedirect
 
     private array $allHeaders;
 
+    const ANTI_REDIRECT_LOOP = 9;
+
     public function __construct(private ?DomainInfo $domain, private string $path = '')
     {
         $this->curl = RedirectManager::getCurlHandle();
@@ -27,9 +29,19 @@ class DomainRedirect
 
         $this->redirects = [];
         $this->allHeaders = [];
+        
+        $antiLoop = 0;
 
         while ($this->lastLocation) {
+            if ($antiLoop > DomainRedirect::ANTI_REDIRECT_LOOP) {
+                $redirect = new Redirect($this->lastLocation);
+                $redirect->setRedirectedTo("INFINITE REDIRECT LOOP!");
+                $this->redirects[] = $redirect;
+                break;
+            }
             $redirect = $this->loadRedirect();
+            if (strcmp($this->lastLocation, $redirect->getRedirectedTo()) === 0)
+                $antiLoop++;
             $this->lastLocation = $redirect->getRedirectedTo();
             array_push($this->allHeaders, $redirect);
 
@@ -38,7 +50,7 @@ class DomainRedirect
                 break;
             }
 
-            $this->redirects[count($this->redirects)] = $redirect;
+            $this->redirects[] = $redirect;
         }
     }
 
