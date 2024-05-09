@@ -49,6 +49,7 @@ class IndexController
         $mRedirect = null; 
         $sRedirect = null; 
         $rRedirect = null;
+        $redList = [];
         $wp = null;
 
         $domainName = $this->parseDomain($_GET["lookup"]);
@@ -82,6 +83,9 @@ class IndexController
             $mRedirect = $redirectManager->getMainDomain();
             $sRedirect = $redirectManager->getSubDomain();
             $rRedirect = $redirectManager->getDomainWithPath();
+            $redList[] = $mRedirect;
+            $redList[] = $sRedirect;
+            $redList[] = $rRedirect;
 
             $wp = new WordpressComponent($redirectManager->getMainDomain(), $activeDomain->getDomainName());
         }
@@ -98,9 +102,7 @@ class IndexController
             "ssl" => $ssl,
             "whois_info" => $whoisInfo,
             "whois_raw" => $whoisRaw,
-            "main_redirect" => $mRedirect,
-            "sub_redirect" => $sRedirect,
-            "rRedirect" => $rRedirect,
+            "red_list" => $redList,
             "wp" => $wp,
         ]);
     }
