@@ -106,7 +106,7 @@ class DomainRedirect
                     continue;
                 list($key, $value) = explode(': ', $line);
 
-                if (strcmp($key, 'link') === 0) {
+                if (strcmp(strtolower($key), 'link') === 0) {
                     if (!isset($nheader['link'])) {
                         $nheader['link'] = [];
                     }
