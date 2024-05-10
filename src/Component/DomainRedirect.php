@@ -40,7 +40,8 @@ class DomainRedirect
                 break;
             }
             $redirect = $this->loadRedirect();
-            if (strcmp($this->lastLocation, $redirect->getRedirectedTo()) === 0)
+            if (strcmp($this->lastLocation, $redirect->getRedirectedTo()) === 0
+            || $this->redirectLoopDetection($redirect->getRedirectedTo()))
                 $antiLoop++;
             $this->lastLocation = $redirect->getRedirectedTo();
             array_push($this->allHeaders, $redirect);
@@ -52,6 +53,15 @@ class DomainRedirect
 
             $this->redirects[] = $redirect;
         }
+    }
+
+    public function redirectLoopDetection(string $url): bool
+    {
+        foreach ($this->redirects as $redirect) {
+            if (strcmp($redirect->getRedirectedTo(), $url) === 0)
+                return true;
+        }
+        return false;
     }
 
     public function hasHTTPS(): bool
@@ -137,7 +147,7 @@ class DomainRedirect
         if ($redirect->getRequestCode() === 0)
             $redirect->setRequestCode(intval($code));
 
-        if (isset($nheader['location'])) {
+        if (isset($nheader['location']) && ($code == 301 || $code == 302)) {
             $redirect->setRedirectedTo($nheader['location']);
         }
 
