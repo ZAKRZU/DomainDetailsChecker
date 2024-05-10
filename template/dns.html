@@ -5,28 +5,44 @@
             <b>A</b>
             <div class="container">
                 <?php 
-                 if ($this->vars->main_domain->getDns()) {
+                 if ($this->vars->main_domain->getDns()
+                 && $this->vars->main_domain->getDns()->A) {
                         echo '<div class="row py-2 border-bottom bg-success-subtle">
                             <div class="col">'.$this->vars->main_domain->getDomainName().'</div>
                             <div class="col">'.$this->vars->main_domain->getDns()->A[0]->getValue().'</div>
                             <div class="col">'.$this->vars->main_domain->getDns()->A[0]->getReverseAddr().'</div>
                             </div>';
                     } else {
-                        echo '<div class="row py-2 border-bottom bg-danger-subtle">
-                                <div class="col">'. $this->vars->main_domain->getLastErrorMessage() .'</div>
-                              </div>';
+                        if ($this->vars->main_domain->getLastErrorMessage()) {
+                            echo '<div class="row py-2 border-bottom bg-danger-subtle">
+                                    <div class="col">'. $this->vars->main_domain->getLastErrorMessage() .'</div>
+                                  </div>';
+                        } else {
+                            echo '<div class="row py-2 border-bottom bg-danger-subtle">
+                                    <div class="col">'.$this->vars->main_domain->getDomainName().'</div>
+                                    <div class="col">Record not found</div>
+                                  </div>';
+                        }
                     }
 
-                    if ($this->vars->sub_domain->getDns()) {
+                    if ($this->vars->sub_domain->getDns()
+                    && $this->vars->sub_domain->getDns()->A) {
                         echo '<div class="row py-2 border-bottom bg-success-subtle">
                                 <div class="col">'.$this->vars->sub_domain->getDomainName().'</div>
                                 <div class="col">'.$this->vars->sub_domain->getDns()->A[0]->getValue().'</div>
                                 <div class="col">'.$this->vars->sub_domain->getDns()->A[0]->getReverseAddr().'</div>
                               </div>';
                     } else {
-                        echo '<div class="row py-2 border-bottom bg-danger-subtle">
-                                <div class="col">'. $this->vars->sub_domain->getLastErrorMessage() .'</div>
-                              </div>';
+                        if ($this->vars->sub_domain->getLastErrorMessage()) {
+                            echo '<div class="row py-2 border-bottom bg-danger-subtle">
+                                    <div class="col">'. $this->vars->sub_domain->getLastErrorMessage() .'</div>
+                                  </div>';
+                        } else {
+                            echo '<div class="row py-2 border-bottom bg-danger-subtle">
+                                    <div class="col">'.$this->vars->sub_domain->getDomainName().'</div>
+                                    <div class="col">Record not found</div>
+                                  </div>';
+                        }
                     }
 
                 ?>
