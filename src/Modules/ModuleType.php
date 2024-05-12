@@ -5,5 +5,6 @@ class ModuleType
 {
     const DNS = "dns";
     const TEMPLATE = "template";
+    const WHOIS_EXT = "whoisExt";
 }
 

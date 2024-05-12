@@ -13,19 +13,17 @@ use Zakrzu\DDC\Manager\DomainChecker;
 use Zakrzu\DDC\Manager\RedirectManager;
 
 use Zakrzu\DDC\Modules\Template\TemplateView;
-
-use Iodev\Whois\Factory;
-use Iodev\Whois\Whois;
+use Zakrzu\DDC\Modules\WhoisExt\WhoisExt;
 
 class IndexController
 {
     private $db = null;
-    private ?Whois $whois = null;
+    private ?WhoisExt $whoisExt = null;
 
     public function __construct()
     {
+        $this->whoisExt = new WhoisExt();
         $this->db = App::$app->getDb();
-        $this->whois = Factory::get()->createWhois();
     }
 
     public function getView(): ?TemplateView
@@ -61,8 +59,8 @@ class IndexController
         else if (strlen($subDomain->getLastErrorMessage()) < 1)
             $activeDomain = $subDomain;
 
-        $whoisInfo = $this->whois->loadDomainInfo($domainName) ?? null;
-        $whoisRaw = $this->whois->lookupDomain($domainName)->text ?? null;
+        $whoisInfo = $this->whoisExt->loadDomainInfo($domainName);
+        $whoisRaw = $this->whoisExt->lookupDomain($domainName)->text ?? null;
 
         if ($activeDomain) {
             if (isset($_GET["txt"])) {
