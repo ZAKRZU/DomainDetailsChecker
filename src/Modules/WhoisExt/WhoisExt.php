@@ -8,6 +8,7 @@ use Iodev\Whois\Factory;
 use Iodev\Whois\Whois;
 use Iodev\Whois\Modules\Tld\TldInfo;
 use Iodev\Whois\Modules\Tld\TldResponse;
+use Zakrzu\DDC\Modules\WhoisExt\Parsers\TldPlParser;
 
 class WhoisExt extends Module
 {
@@ -86,7 +87,12 @@ class WhoisExt extends Module
 
         list ($response, $info) = $this->whois->getTldModule()->loadDomainData($domainName, $servers);
         $this->response = $response;
-        $this->info = $info;
+        if (strcmp($zone, ".pl") === 0 && $info) {
+            $parser = new TldPlParser();
+            $this->info = $parser->parseInfo($info);
+        } else {
+            $this->info = $info;
+        }
         if (str_contains($this->response->text, "request limit exceeded")) {
             $this->lockTldQuery($zone);
         }
