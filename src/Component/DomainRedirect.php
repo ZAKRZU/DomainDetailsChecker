@@ -39,10 +39,23 @@ class DomainRedirect
                 $this->redirects[] = $redirect;
                 break;
             }
+
             $redirect = $this->loadRedirect();
             if (strcmp($this->lastLocation, $redirect->getRedirectedTo()) === 0
             || $this->redirectLoopDetection($redirect->getRedirectedTo()))
                 $antiLoop++;
+
+            if (!parse_url($redirect->getRedirectedTo(), PHP_URL_HOST) && $redirect->getRedirectedTo()) {
+                if (str_starts_with($redirect->getRedirectedTo(), "/")) {
+                    $scheme = parse_url($redirect->getFrom(), PHP_URL_SCHEME);
+                    $host = parse_url($redirect->getFrom(), PHP_URL_HOST);
+                    $url = $scheme . "://" . $host . $redirect->getRedirectedTo();
+                } else {
+                    $url = $redirect->getFrom() . $redirect->getRedirectedTo();
+                }
+                $redirect->setRedirectedTo($url);
+            }
+
             $this->lastLocation = $redirect->getRedirectedTo();
             array_push($this->allHeaders, $redirect);
 
@@ -110,7 +123,8 @@ class DomainRedirect
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($this->curl, CURLOPT_HEADER, 1);
-        curl_setopt($this->curl, CURLOPT_USERAGENT, "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion");
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($this->curl, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0");
         curl_setopt($this->curl, CURLOPT_TIMEOUT, 30);
 
         $response = curl_exec($this->curl);
