@@ -99,6 +99,8 @@ class App
             copy('src/configuration.default.php', 'src/configuration.php');
             include_once('src/configuration.php');
         }
+        if (!defined("APP_ENV"))
+            define("APP_ENV", "PROD");
     }
 
     public function loadExtensions(): void

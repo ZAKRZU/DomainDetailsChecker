@@ -25,7 +25,11 @@ class DnsModule extends Module
 
     public function dig(string $domain): DnsZone
     {
-        $response = dns_get_record($domain, DNS_ALL);
+        if (APP_ENV == "DEV") {
+            $response = dns_get_record($domain, DNS_ALL);
+        } else {
+            $response = @dns_get_record($domain, DNS_ALL);
+        }
         if ($response === false) {
             throw new DnsException("System Error: Function failed to load DNS Records for " . $domain);
         }

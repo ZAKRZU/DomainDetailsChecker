@@ -12,8 +12,12 @@ class SSLComponent
     {
         //$orignal_parse = parse_url('https://' . $domain, PHP_URL_HOST);
         $get = stream_context_create(array("ssl" => array("capture_peer_cert" => TRUE)));
-        $read = stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
-
+        if (APP_ENV === "DEV") {
+            $read = stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
+        } else {
+            $read = @stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
+        }
+        
         if ($read == false) {
             $this->cn = "SSL NOT FOUND OR NOT INVALID";
             $this->issuer = "SSL NOT FOUND OR NOT INVALID";

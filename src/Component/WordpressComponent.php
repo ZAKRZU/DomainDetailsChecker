@@ -12,7 +12,7 @@ class WordpressComponent
 
     public function __construct(DomainRedirect $redirection, String $domain)
     {
-        foreach ($redirection->getAllHeaders() as $key => $value) {
+        foreach ($redirection->getAllHeaders() as $value) {
             if (isset($value->getAdditionalHeaders()['x-redirect-by'])) {
                 $xRedirectBy = $value->getAdditionalHeaders()['x-redirect-by'];
                 if (strcmp(strtolower($xRedirectBy), 'wordpress') === 0) {
@@ -21,7 +21,7 @@ class WordpressComponent
             }
             if (isset($value->getAdditionalHeaders()['link'])) {
                 $link = $value->getAdditionalHeaders()['link'];
-                foreach ($link as $key => $linkValue) {
+                foreach ($link as $linkValue) {
                     if (str_contains($linkValue, 'api.w.org')) {
                         $this->linkToWpRest = true;
                     }
@@ -55,10 +55,13 @@ class WordpressComponent
         try {
             $headers = stream_get_meta_data($fp)['wrapper_data'];
         } catch (\TypeError $th) {
-            return $http_response_header[0];
+            if (isset($http_response_header))
+                return $http_response_header[0];
+            else
+                return "";
         }
 
-        foreach ($headers as $key => $value) {
+        foreach ($headers as $value) {
 
             if (str_starts_with($value, 'HTTP/1.1')) {
                 $val = intval(substr($value, 9, 3));
