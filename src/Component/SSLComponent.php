@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Component;
 
 class SSLComponent
@@ -7,17 +8,20 @@ class SSLComponent
     private string $issuer;
     private string $validFrom;
     private string $validTo;
+    private array $subjectAltNames = [];
 
-    public function __construct(string $domain)
+    public function __construct(private string $domain)
     {
-        //$orignal_parse = parse_url('https://' . $domain, PHP_URL_HOST);
-        $get = stream_context_create(array("ssl" => array("capture_peer_cert" => TRUE)));
+        // EXPERIMENTAL
+        $get = stream_context_create(array("ssl" => array("capture_peer_cert" => TRUE, "verify_peer" => FALSE, "verify_peer_name" => FALSE)));
+        // ORIGINAL
+        // $get = stream_context_create(array("ssl" => array("capture_peer_cert" => TRUE)));
         if (APP_ENV === "DEV") {
             $read = stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
         } else {
             $read = @stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
         }
-        
+
         if ($read == false) {
             $this->cn = "SSL NOT FOUND OR NOT INVALID";
             $this->issuer = "SSL NOT FOUND OR NOT INVALID";
@@ -32,6 +36,8 @@ class SSLComponent
         $this->issuer = $certinfo['issuer']['C'] . ' ' . $certinfo['issuer']['O'] . ' ' . $certinfo['issuer']['CN'];
         $this->validFrom = gmdate("Y-m-d\TH:i:s\Z", intval($certinfo['validFrom_time_t']));
         $this->validTo = gmdate("Y-m-d\TH:i:s\Z", intval($certinfo['validTo_time_t']));
+        $subjectAltNameReplaced = str_replace('DNS:', "", $certinfo['extensions']['subjectAltName']);
+        $this->subjectAltNames = explode(', ', $subjectAltNameReplaced);
     }
 
     public function getCN(): string
@@ -68,6 +74,15 @@ class SSLComponent
         $today = new \DateTime();
         $interval = $today->diff($to);
         return intval($interval->format('%R%a'));
+    }
+    // EXPERIMENTAL
+    public function hasValidCN(): bool
+    {
+        foreach ($this->subjectAltNames as $altName) {
+            if (str_contains($altName, $this->domain))
+                return true;
+        }
+        return false;
     }
 
     public function issuedByLetsEncrypt(): bool

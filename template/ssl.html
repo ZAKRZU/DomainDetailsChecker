@@ -2,23 +2,29 @@
     <div class="card">
         <?php 
         if ($this->vars->ssl->issuedByLetsEncrypt()) {
-            if ($this->vars->ssl->getDaysNumber() > 0 & $this->vars->ssl->getDaysNumber() < SSL_WARNING_DAYS) {
+            if ($this->vars->ssl->getDaysNumber() > 0 & $this->vars->ssl->getDaysNumber() < SSL_WARNING_DAYS && $this->vars->ssl->hasValidCN()) {
                 echo    '<div class="card-header bg-info-subtle bg-gradient"><b>SSL (Let\'s Encrypt)</b></div>
                          <div class="card-body bg-warning-subtle">';
-            } else if ($this->vars->ssl->getDaysNumber() < 1) {
+            } else if ($this->vars->ssl->getDaysNumber() < 1 && $this->vars->ssl->hasValidCN()) {
                 echo    '<div class="card-header bg-info-subtle bg-gradient"><b>SSL (Let\'s Encrypt)</b></div>
                          <div class="card-body bg-danger-subtle">';
+            } else if (!$this->vars->ssl->hasValidCN()) {
+                echo    '<div class="card-header bg-info-subtle bg-gradient"><b>SSL (Let\'s Encrypt) <span class="text-danger">!(INVALID CN)!</span></b></div>
+                         <div class="card-body bg-success-subtle">';
             } else {
                 echo    '<div class="card-header bg-info-subtle bg-gradient"><b>SSL (Let\'s Encrypt)</b></div>
                          <div class="card-body bg-success-subtle">';
             }
         } else {
-            if ($this->vars->ssl->getDaysNumber() > 0 & $this->vars->ssl->getDaysNumber() < SSL_WARNING_DAYS) {
-                echo    '<div class="card-header bg-warning-subtle bg-gradient"><b>SSL</b></div>
+            if ($this->vars->ssl->getDaysNumber() > 0 & $this->vars->ssl->getDaysNumber() < SSL_WARNING_DAYS && $this->vars->ssl->hasValidCN()) {
+                echo    '<div class="card-header bg-warning-subtle bg-gradient"><b>SSL (EXPIRES SOON)</b></div>
                          <div class="card-body bg-warning-subtle">';
-            } else if ($this->vars->ssl->getDaysNumber() < 1) {
-                echo    '<div class="card-header bg-danger-subtle bg-gradient"><b>SSL</b></div>
+            } else if ($this->vars->ssl->getDaysNumber() < 1 && $this->vars->ssl->hasValidCN()) {
+                echo    '<div class="card-header bg-danger-subtle bg-gradient"><b>SSL (EXPIRED)</b></div>
                          <div class="card-body bg-danger-subtle">';
+            } else if (!$this->vars->ssl->hasValidCN()) {
+                echo    '<div class="card-header bg-success-subtle bg-gradient"><b>SSL <span class="text-danger">!(INVALID CN)!</span></b></div>
+                         <div class="card-body bg-success-subtle">';
             } else {
                 echo    '<div class="card-header bg-success-subtle bg-gradient"><b>SSL</b></div>
                          <div class="card-body bg-success-subtle">';
