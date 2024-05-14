@@ -16,6 +16,7 @@ class DomainRedirect
     private array $allHeaders;
 
     const ANTI_REDIRECT_LOOP = 9;
+    const MAX_LOOPS = 50;
 
     public function __construct(private ?DomainInfo $domain, private string $path = '')
     {
@@ -31,14 +32,17 @@ class DomainRedirect
         $this->allHeaders = [];
         
         $antiLoop = 0;
+        $maxLoops = 0;
 
         while ($this->lastLocation) {
-            if ($antiLoop > DomainRedirect::ANTI_REDIRECT_LOOP) {
+            if ($antiLoop > DomainRedirect::ANTI_REDIRECT_LOOP 
+                || $maxLoops > DomainRedirect::MAX_LOOPS) {
                 $redirect = new Redirect($this->lastLocation);
-                $redirect->setRedirectedTo("INFINITE REDIRECT LOOP!");
+                $redirect->setRedirectedTo("INFINITE REDIRECT LOOP! (or too many redirects)");
                 $this->redirects[] = $redirect;
                 break;
             }
+            $maxLoops++;
 
             $redirect = $this->loadRedirect();
             if (strcmp($this->lastLocation, $redirect->getRedirectedTo()) === 0

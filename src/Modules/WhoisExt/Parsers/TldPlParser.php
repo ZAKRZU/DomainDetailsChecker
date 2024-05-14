@@ -7,7 +7,7 @@ use Iodev\Whois\Modules\Tld\TldInfo;
 
 class TldPlParser implements IParser
 {
-    private string $name = "TldPlParser";
+    private string $name = "TldPLParser";
 
     public function parseInfo(TldInfo $tldInfo): TldInfo
     {
