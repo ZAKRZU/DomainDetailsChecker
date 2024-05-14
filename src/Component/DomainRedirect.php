@@ -126,7 +126,9 @@ class DomainRedirect
         curl_setopt($this->curl, CURLOPT_URL, $this->lastLocation);
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($this->curl, CURLOPT_NOBODY, 1);
         curl_setopt($this->curl, CURLOPT_HEADER, 1);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($this->curl, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0");
         curl_setopt($this->curl, CURLOPT_TIMEOUT, 30);

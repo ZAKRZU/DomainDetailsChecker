@@ -71,11 +71,18 @@ class Redirect
 
     public function isAbroad(): bool
     {
-        $pureDomain = str_replace('www.', '', parse_url($this->from, PHP_URL_HOST));
-        $parsed = parse_url($this->redirectedTo, PHP_URL_HOST);
-        if (!$parsed)
-            return true;
-        $pureRedirected = str_replace('www.', '', $parsed);
+        $parseDomain = parse_url($this->from, PHP_URL_HOST);
+        $parseRedirected = parse_url($this->redirectedTo, PHP_URL_HOST);
+
+        if (!$parseDomain)
+            $parseDomain = $this->from;
+
+        if (!$parseRedirected)
+            $parseRedirected = $this->redirectedTo;
+
+        $pureDomain = str_replace('www.', '', $parseDomain);
+        $pureRedirected = str_replace('www.', '', $parseRedirected);
+
         if (strcmp($pureDomain, $pureRedirected) === 0)
             return false;
         else
