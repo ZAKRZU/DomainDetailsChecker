@@ -165,7 +165,8 @@ class DomainRedirect
         if ($redirect->getRequestCode() === 0)
             $redirect->setRequestCode(intval($code));
 
-        if (isset($nheader['location']) && ($code == 301 || $code == 302)) {
+        if (isset($nheader['location']) 
+            && ($code == 301 || $code == 302 || $code == 303 || $code == 307 || $code == 308)) {
             $redirect->setRedirectedTo($nheader['location']);
         }
 
