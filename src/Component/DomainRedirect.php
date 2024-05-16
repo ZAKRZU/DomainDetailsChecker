@@ -88,7 +88,17 @@ class DomainRedirect
 
     public function isAbroad(): bool
     {
-        return $this->getLastRedirect()->isAbroad();
+        $pureDomain = str_replace('www.', '', $this->domain->getDomainName());
+        $parseRedirected = parse_url($this->getLastRedirect()->getRedirectedTo(), PHP_URL_HOST);
+        if ($parseRedirected === null)
+            $parseRedirected = $this->getLastRedirect()->getRedirectedTo();
+
+        $pureRedirected = str_replace('www.', '', $parseRedirected);
+        if (strcmp($pureDomain, $pureRedirected) === 0)
+            return false;
+        else
+            return true;
+
     }
 
     public function getRedirects(): array
@@ -176,7 +186,7 @@ class DomainRedirect
             $redirect->addAdditionalHeader('x-redirect-by', $nheader['x-redirect-by']);
         }
 
-        if (isset($nheader['link'])) {
+        if (isset($nheader['link']) && is_array($nheader['link'])) {
             $redirect->addAdditionalHeaderList('link', $nheader['link']);
         }
 
