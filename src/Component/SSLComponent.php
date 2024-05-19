@@ -2,12 +2,22 @@
 
 namespace Zakrzu\DDC\Component;
 
+
 class SSLComponent
 {
+    
+    const SSL_VALID = 0;
+    const SSL_WARNING = 1;
+    const SSL_INVALID = 2;
+
     private string $cn;
+
     private string $issuer;
+
     private string $validFrom;
+
     private string $validTo;
+
     private array $subjectAltNames = [];
 
     public function __construct(private string $domain)
@@ -74,6 +84,17 @@ class SSLComponent
         $today = new \DateTime();
         $interval = $today->diff($to);
         return intval($interval->format('%R%a'));
+    }
+
+    public function getSSLStatus(): int
+    {
+        if ($this->getDaysNumber() > SSL_WARNING_DAYS)
+            return SSLComponent::SSL_VALID;
+        if ($this->getDaysNumber() > 0 && $this->getDaysNumber() < SSL_WARNING_DAYS)
+            return SSLComponent::SSL_WARNING;
+        if ($this->getDaysNumber() <= 0)
+            return SSLComponent::SSL_INVALID;
+        return SSLComponent::SSL_INVALID;
     }
 
     // EXPERIMENTAL
