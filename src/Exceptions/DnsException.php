@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Exceptions;
 
 use Throwable;

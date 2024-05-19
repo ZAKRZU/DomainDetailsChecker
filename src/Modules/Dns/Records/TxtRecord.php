@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Dns\Records;
 
 use Zakrzu\DDC\Modules\Dns\Records\Record;
@@ -10,5 +11,4 @@ class TxtRecord extends Record
     {
         parent::__construct($host, $value, Record::TXT);
     }
-
 }

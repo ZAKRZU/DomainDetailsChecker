@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules;
 
 class ModuleType
@@ -7,4 +8,3 @@ class ModuleType
     const TEMPLATE = "template";
     const WHOIS_EXT = "whoisExt";
 }
-

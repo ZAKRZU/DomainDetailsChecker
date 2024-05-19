@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Template;
 
 use Zakrzu\DDC\App;
@@ -6,7 +7,8 @@ use Zakrzu\DDC\App;
 use Zakrzu\DDC\Modules\Template\TemplateModule;
 use Zakrzu\DDC\Modules\Template\TemplateVariables;
 
-class TemplateView {
+class TemplateView
+{
 
     private string $templateName = "";
 
@@ -35,5 +37,4 @@ class TemplateView {
         if (strlen($path) > 0)
             include $path;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Manager;
 
 use Zakrzu\DDC\App;
@@ -9,7 +10,8 @@ class DomainChecker
 {
     private Database $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = App::$app->getDb();
     }
 
@@ -27,7 +29,8 @@ class DomainChecker
         return $result;
     }
 
-    public function getAll(): array {
+    public function getAll(): array
+    {
         $resultArray = [];
         $sql = "SELECT * FROM domain_checker";
         $stmt = $this->db->getConn()->prepare($sql);
@@ -45,7 +48,8 @@ class DomainChecker
         return $resultArray;
     }
 
-    public function getAllByDomain(string $domain): array {
+    public function getAllByDomain(string $domain): array
+    {
         $resultArray = [];
         $sql = "SELECT * FROM domain_checker WHERE domain like (?)";
         $stmt = $this->db->getConn()->prepare($sql);
@@ -64,7 +68,8 @@ class DomainChecker
         return $resultArray;
     }
 
-    public function countDomain(string $domain): int|bool {
+    public function countDomain(string $domain): int|bool
+    {
         $sql = "SELECT count(*) FROM domain_checker WHERE domain like (?)";
         $stmt = $this->db->getConn()->prepare($sql);
         $stmt->bind_param('s', $domain);
@@ -78,7 +83,8 @@ class DomainChecker
         return intval($result);
     }
 
-    public function getLastDomain(string $domain): DomainEntity|bool {
+    public function getLastDomain(string $domain): DomainEntity|bool
+    {
         $sql = "SELECT * FROM domain_checker WHERE domain like (?) order by date desc LIMIT 1";
         $stmt = $this->db->getConn()->prepare($sql);
         $stmt->bind_param('s', $domain);
@@ -96,7 +102,8 @@ class DomainChecker
         return $domain;
     }
 
-    public function getById(int $id): DomainEntity|bool {
+    public function getById(int $id): DomainEntity|bool
+    {
         $sql = "SELECT * FROM domain_checker WHERE id = ?";
         $stmt = $this->db->getConn()->prepare($sql);
         $stmt->bind_param('i', $id);

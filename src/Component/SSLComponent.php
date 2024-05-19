@@ -75,6 +75,7 @@ class SSLComponent
         $interval = $today->diff($to);
         return intval($interval->format('%R%a'));
     }
+
     // EXPERIMENTAL
     public function hasValidCN(): bool
     {

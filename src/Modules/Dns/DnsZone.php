@@ -1,11 +1,12 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Dns;
 
 class DnsZone implements \JsonSerializable
 {
 
     protected $data;
-    
+
     protected $dataDefault = [
         "A" => [],
         "NS" => [],
@@ -46,7 +47,7 @@ class DnsZone implements \JsonSerializable
     public function toArray(): array
     {
         $data = [];
-        foreach($this->dataDefault as $key => $default) {
+        foreach ($this->dataDefault as $key => $default) {
             $data[$key] = $this->__get($key);
         }
         return $data;
@@ -56,5 +57,4 @@ class DnsZone implements \JsonSerializable
     {
         return $this->toArray();
     }
-
 }

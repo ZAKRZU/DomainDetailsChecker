@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Dns\Records;
 
 abstract class Record

@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace Zakrzu\DDC;
 
 use Zakrzu\DDC\Component\Database;
@@ -39,8 +40,7 @@ class App
         $this->loadConfiguration();
         $this->initModules();
         $this->loadExtensions();
-        if (!(DB_NAME && DB_PASS && DB_NAME))
-        {
+        if (!(DB_NAME && DB_PASS && DB_NAME)) {
             $this->db = null;
             return;
         }
@@ -76,13 +76,6 @@ class App
         return $this->getModuleByName(ModuleType::TEMPLATE) ?? null;
     }
 
-    public static function Log($something): void
-    {
-        print_r("<pre>");
-        print_r($something);
-        print_r("</pre>");
-    }
-
     /**
      * @return Database|null
      */
@@ -105,11 +98,10 @@ class App
 
     public function loadExtensions(): void
     {
-        foreach(glob("extensions/*") as $folder) {
-            foreach(glob($folder.'/*.php') as $script) {
+        foreach (glob("extensions/*") as $folder) {
+            foreach (glob($folder . '/*.php') as $script) {
                 include $script;
             }
-        } 
+        }
     }
-
 }

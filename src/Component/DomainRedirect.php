@@ -6,6 +6,9 @@ use Zakrzu\DDC\Manager\RedirectManager;
 
 class DomainRedirect
 {
+    const MAX_SAME_REDIRECTS = 9;
+
+    const MAX_REDIRECT_DEPTH = 50;
 
     private \CurlHandle $curl;
 
@@ -15,8 +18,6 @@ class DomainRedirect
 
     private array $allHeaders;
 
-    const ANTI_REDIRECT_LOOP = 9;
-    const MAX_LOOPS = 50;
 
     public function __construct(private ?DomainInfo $domain, private string $path = '')
     {
@@ -30,23 +31,27 @@ class DomainRedirect
 
         $this->redirects = [];
         $this->allHeaders = [];
-        
+
         $antiLoop = 0;
-        $maxLoops = 0;
+        $redirectsDepth = 0;
 
         while ($this->lastLocation) {
-            if ($antiLoop > DomainRedirect::ANTI_REDIRECT_LOOP 
-                || $maxLoops > DomainRedirect::MAX_LOOPS) {
+            if (
+                $antiLoop > DomainRedirect::MAX_SAME_REDIRECTS
+                || $redirectsDepth > DomainRedirect::MAX_REDIRECT_DEPTH
+            ) {
                 $redirect = new Redirect($this->lastLocation);
                 $redirect->setRedirectedTo("INFINITE REDIRECT LOOP! (or too many redirects)");
                 $this->redirects[] = $redirect;
                 break;
             }
-            $maxLoops++;
+            $redirectsDepth++;
 
             $redirect = $this->loadRedirect();
-            if (strcmp($this->lastLocation, $redirect->getRedirectedTo()) === 0
-            || $this->redirectLoopDetection($redirect->getRedirectedTo()))
+            if (
+                strcmp($this->lastLocation, $redirect->getRedirectedTo()) === 0
+                || $this->redirectLoopDetection($redirect->getRedirectedTo())
+            )
                 $antiLoop++;
 
             if (!parse_url($redirect->getRedirectedTo(), PHP_URL_HOST) && $redirect->getRedirectedTo()) {
@@ -98,7 +103,6 @@ class DomainRedirect
             return false;
         else
             return true;
-
     }
 
     public function getRedirects(): array
@@ -174,11 +178,13 @@ class DomainRedirect
         $code = str_replace('HTTP/3 ', '', $code);
         $code = substr($code, 0, 3);
 
-        if ($redirect->getRequestCode() === 0)
-            $redirect->setRequestCode(intval($code));
+        if ($redirect->getResponseCode() === 0)
+            $redirect->setResponseCode(intval($code));
 
-        if (isset($nheader['location']) 
-            && ($code == 301 || $code == 302 || $code == 303 || $code == 307 || $code == 308)) {
+        if (
+            isset($nheader['location'])
+            && ($code == 301 || $code == 302 || $code == 303 || $code == 307 || $code == 308)
+        ) {
             $redirect->setRedirectedTo($nheader['location']);
         }
 

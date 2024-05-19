@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Dns\Records;
 
 use Zakrzu\DDC\Modules\Dns\Records\Record;
@@ -18,5 +19,4 @@ class ARecord extends Record
     {
         return $this->reverseDns;
     }
-
 }

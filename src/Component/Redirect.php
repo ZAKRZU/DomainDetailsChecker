@@ -7,14 +7,14 @@ class Redirect
 
     private string $redirectedTo;
 
-    private int $requestCode;
+    private int $responseCode;
 
     private array $additionalHeaders;
 
     public function __construct(private string $from)
     {
         $this->redirectedTo = '';
-        $this->requestCode = 0;
+        $this->responseCode = 0;
         $this->additionalHeaders = [];
     }
 
@@ -23,14 +23,14 @@ class Redirect
         return $this->from;
     }
 
-    public function setRequestCode(int $code): void
+    public function setResponseCode(int $code): void
     {
-        $this->requestCode = $code;
+        $this->responseCode = $code;
     }
 
-    public function getRequestCode(): int
+    public function getResponseCode(): int
     {
-        return $this->requestCode;
+        return $this->responseCode;
     }
 
     public function setRedirectedTo(string $redirectedTo): void

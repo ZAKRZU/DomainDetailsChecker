@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\WhoisExt;
 
 use Zakrzu\DDC\Modules\Module;
@@ -85,7 +86,7 @@ class WhoisExt extends Module
             return;
         }
 
-        list ($response, $info) = $this->whois->getTldModule()->loadDomainData($domainName, $servers);
+        list($response, $info) = $this->whois->getTldModule()->loadDomainData($domainName, $servers);
         $this->response = $response;
         if (strcmp($zone, ".pl") === 0 && $info) {
             $parser = new TldPlParser();
@@ -129,5 +130,4 @@ class WhoisExt extends Module
         $date = date("Y-m-d H:i:s\Z", $timeout + $this->timeout);
         return $date;
     }
-
 }

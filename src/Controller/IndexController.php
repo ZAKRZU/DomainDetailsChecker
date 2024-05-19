@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Controller;
 
 use Zakrzu\DDC\App;
@@ -43,9 +44,9 @@ class IndexController
         $db = null;
         $dns = null;
         $ssl = null;
-        $redirectManager = null; 
-        $mRedirect = null; 
-        $sRedirect = null; 
+        $redirectManager = null;
+        $mRedirect = null;
+        $sRedirect = null;
         $rRedirect = null;
         $redList = [];
         $wp = null;
@@ -54,9 +55,9 @@ class IndexController
         $mainDomain = new DomainInfo($domainName);
         $subDomain = new DomainInfo("www." . $domainName);
 
-        if (strlen($mainDomain->getLastErrorMessage()) < 1)
+        if ($mainDomain->getDns())
             $activeDomain = $mainDomain;
-        else if (strlen($subDomain->getLastErrorMessage()) < 1)
+        else if ($subDomain->getDns())
             $activeDomain = $subDomain;
 
         $whoisInfo = $this->whoisExt->loadDomainInfo($domainName);
@@ -124,7 +125,7 @@ class IndexController
             } else {
                 $manager->add($dEntity);
             }
-            
+
             $_SESSION['lastDomain'] = $domain->getDomainName();
         }
         return $ret;
@@ -148,5 +149,4 @@ class IndexController
     {
         return new TemplateView('body.html');
     }
-
 }

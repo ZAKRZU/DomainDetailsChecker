@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Dns;
 
 use Zakrzu\DDC\Modules\Dns\Records\Record;
@@ -15,7 +16,7 @@ class DnsParser
     public function parseRecords(array $response): DnsZone
     {
         $parsed = $this->parseResponse($response);
-        return new DnsZone($parsed); 
+        return new DnsZone($parsed);
     }
 
     public function parseResponse(array $response): array
@@ -26,7 +27,7 @@ class DnsParser
             "CNAME" => [],
             "TXT" => [],
         ];
-        foreach($response as $record) {
+        foreach ($response as $record) {
             if ($record["type"] === Record::A) {
                 $info['A'][] = new ARecord($record['host'], $record['ip']);
             }

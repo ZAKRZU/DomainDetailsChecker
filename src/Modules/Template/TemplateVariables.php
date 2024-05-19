@@ -1,7 +1,9 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Template;
 
-class TemplateVariables {
+class TemplateVariables
+{
 
     private array $data;
 
@@ -14,5 +16,4 @@ class TemplateVariables {
     {
         return $this->data[$key] ?? null;
     }
-
 }

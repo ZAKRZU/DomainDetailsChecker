@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Dns;
 
 use Zakrzu\DDC\Exceptions\DnsException;
@@ -34,10 +35,9 @@ class DnsModule extends Module
             throw new DnsException("System Error: Function failed to load DNS Records for " . $domain);
         }
         if (count($response) < 1) {
-            throw new DnsException("No records found for domain " . $domain . " (Domain may not exist)" );
+            throw new DnsException("No records found for domain " . $domain . " (Domain may not exist)");
         }
         $dns = $this->parser->parseRecords($response);
         return $dns;
     }
-
 }

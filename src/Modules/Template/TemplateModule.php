@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules\Template;
 
 use Zakrzu\DDC\Modules\Module;
@@ -6,9 +7,10 @@ use Zakrzu\DDC\Modules\ModuleType;
 
 use Zakrzu\DDC\Modules\Template\TemplateView;
 
-class TemplateModule extends Module {
+class TemplateModule extends Module
+{
 
-    const string TEMPLATE_LOCATION = __DIR__ . "/../../../template/";
+    const TEMPLATE_LOCATION = __DIR__ . "/../../../template/";
 
     private array $templateOverrides;
     private array $templateHooks;
@@ -22,12 +24,12 @@ class TemplateModule extends Module {
 
     public function addOverride(string $name, string $value): void
     {
-       $this->templateOverrides[$name] = $value;
+        $this->templateOverrides[$name] = $value;
     }
 
     public function addHook(string $name, string $value): void
     {
-       $this->templateHooks[$name] = $value;
+        $this->templateHooks[$name] = $value;
     }
 
     public function getTemplate(string $key): string
@@ -50,5 +52,4 @@ class TemplateModule extends Module {
     {
         $template->render();
     }
-
 }

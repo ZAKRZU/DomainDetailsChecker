@@ -46,7 +46,7 @@ class WordpressComponent
         return $this->rss;
     }
 
-    public function lookForRSS(string $domain)
+    public function lookForRSS(string $domain): mixed
     {
         set_error_handler(function () { /* ignore errrors by now */
         });

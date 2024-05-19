@@ -1,4 +1,5 @@
 <?php
+
 namespace Zakrzu\DDC\Modules;
 
 abstract class Module
@@ -18,5 +19,4 @@ abstract class Module
     {
         return $this->type;
     }
-
 }

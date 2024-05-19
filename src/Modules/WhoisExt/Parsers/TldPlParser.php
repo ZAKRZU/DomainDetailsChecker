@@ -28,7 +28,7 @@ class TldPlParser implements IParser
     {
         $ns = [];
         $found = false;
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             if (isset($group["nameservers"])) {
                 $found = true;
                 $ns[] = $group["nameservers"];
@@ -48,7 +48,7 @@ class TldPlParser implements IParser
     {
         $registrar = "";
         $found = false;
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             if (isset($group["REGISTRAR"])) {
                 $found = true;
                 //$registrar .= $group["REGISTRAR"][0];
