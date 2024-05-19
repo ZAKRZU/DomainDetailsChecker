@@ -29,7 +29,7 @@ class IndexController
 
     public function getView(): ?TemplateView
     {
-        if (isset($_GET["lookup"])) {
+        if (isset($_GET["lookup"]) && strlen($_GET["lookup"]) > 0) {
             return $this->index();
         } else {
             return $this->form();
