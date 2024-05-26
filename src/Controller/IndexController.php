@@ -134,13 +134,17 @@ class IndexController
     public function parseDomain(string $domain): string
     {
         $parsedName = trim($domain);
-        $parsedName = str_replace('*.', '', $parsedName);
-        $parsedName = str_replace('www.', '', $parsedName);
         if (parse_url($parsedName, PHP_URL_HOST) != null) {
             $parsedName = parse_url($parsedName, PHP_URL_HOST);
         }
         if (str_contains($parsedName, '/')) {
             $parsedName = explode('/', $parsedName)[0];
+        }
+        if (str_starts_with($parsedName, '*.')) {
+            $parsedName = substr($parsedName, 2);
+        }
+        if (str_starts_with($parsedName, 'www.')) {
+            $parsedName = substr($parsedName, 4);
         }
         return trim($parsedName);
     }
