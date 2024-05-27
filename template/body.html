@@ -13,6 +13,11 @@
 </head>
 <body>
     <div class="container">
+        <?php if (APP_ENV == "DEV") { ?>
+        <div class="mt-4 alert alert-warning text-center">
+            DEVELOPMENT ENVIRONMENT
+        </div>
+        <?php } ?>
         <div class="mt-2 d-flex flex-row-reverse gap-2">
             <div class="col-auto">
                 <select class="form-select" aria-label="Theme selector" id="theme-selector">
