@@ -1,7 +1,17 @@
 <div class="mt-3 mb-3">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            WHOIS for <?php echo $this->vars->domain_name; ?>
+            <span>
+            WHOIS:
+                <b>
+                <?php
+                    if ($this->vars->whois_info->domainNameExtended)
+                        echo $this->vars->whois_info->domainNameExtended;
+                    else
+                        echo $this->vars->domain_name;
+                ?>
+                </b>
+            </span>
             <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#whoisModal">
                 Raw WHOIS
             </button>

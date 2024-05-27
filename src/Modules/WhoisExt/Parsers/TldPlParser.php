@@ -17,11 +17,27 @@ class TldPlParser implements IParser
 
         $ns = $this->findNameServers($options["groups"]);
         $registrar = $this->findRegistrar($options["groups"]);
+        $domainNameExtended = $this->findDomainNameExtended($options["groups"]);
 
         $data["nameServers"] = $ns;
         $data["registrar"] = $registrar;
+        if ($domainNameExtended)
+            $data["domainNameExtended"] = $domainNameExtended;
 
         return $this->createDomainInfo($response, $data, $options);
+    }
+
+
+    public function findDomainNameExtended(array $groups): ?string
+    {
+        $domainNameExtended = null;
+        foreach ($groups as $group) {
+            if (isset($group["DOMAIN NAME"])) {
+                $domainNameExtended = $group["DOMAIN NAME"];
+                break;
+            }
+        }
+        return $domainNameExtended;
     }
 
     public function findNameServers(array $groups): array
