@@ -43,7 +43,7 @@ class DnsParser
                 $info['TXT'][] = new TxtRecord($record['host'], $record['txt']);
             }
             if ($record["type"] === Record::CAA) {
-                $info['CAA'][] = new CaaRecord($record['host'], $record['flags'], $record['caa'], $record['txt']);
+                $info['CAA'][] = new CaaRecord($record['host'], $record['flags'], $record['tag'], $record['value']);
             }
         }
         return $info;
