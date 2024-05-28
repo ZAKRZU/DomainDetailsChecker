@@ -8,6 +8,7 @@ abstract class Record
     const CNAME = "CNAME";
     const NS = "NS";
     const TXT = "TXT";
+    const CAA = "CAA"; // unsupported on Windows, check CaaRecord class for more details
 
     protected string $host;
     protected string $value;

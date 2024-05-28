@@ -74,6 +74,7 @@ class IndexController
             $dns = [
                 "txt_count" => count($activeDomain->getDns()->TXT),
                 "ns_count" => count($activeDomain->getDns()->NS),
+                "caa_count" => count($activeDomain->getDns()->CAA),
             ];
 
             $ssl = new SSLComponent($activeDomain->getDomainName());

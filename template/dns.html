@@ -79,6 +79,31 @@
                 }
             ?>
             <hr>
+            <?php
+                  if ($this->vars->dns['caa_count'] > 0) {
+                    echo '<div class="accordion mt-3" id="accordionCAA">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCaaRecords">';
+                    echo                '<h6>CAA Records ('.$this->vars->dns['caa_count'].')</h6>';
+                    echo           '</button>
+                                </h2>
+                                <div id="collapseCaaRecords" class="accordion-collapse collapse" data-bs-parrent="#accordionCAA">
+                                    <div class="accordion-body">
+                                        <ul class="list-group list-group-flush">';
+                                            foreach ($this->vars->main_domain->getDns()->CAA as $key => $caaRecord) {
+                                                echo '<li class="list-group-item">'.$caaRecord->getFlags().' '.$caaRecord->getTag().' ' .$caaRecord->getValue().'</li>';
+                                            }
+                    echo               '</ul>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>';
+                } else {
+                    echo "No CAA records";
+                }
+            ?>
+            <hr>
             <b>NS</b>
             <div class="d-flex gap-2 px-3 flex-wrap">
                 <?php 

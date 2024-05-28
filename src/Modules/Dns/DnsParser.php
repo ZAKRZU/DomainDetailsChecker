@@ -7,6 +7,7 @@ use Zakrzu\DDC\Modules\Dns\Records\ARecord;
 use Zakrzu\DDC\Modules\Dns\Records\NsRecord;
 use Zakrzu\DDC\Modules\Dns\Records\TxtRecord;
 use Zakrzu\DDC\Modules\Dns\Records\CnameRecord;
+use Zakrzu\DDC\Modules\Dns\Records\CaaRecord;
 
 use Zakrzu\DDC\Modules\Dns\DnsZone;
 
@@ -26,6 +27,7 @@ class DnsParser
             "NS" => [],
             "CNAME" => [],
             "TXT" => [],
+            "CAA" => [], // unsupported on Windows, check CaaRecord class for more details
         ];
         foreach ($response as $record) {
             if ($record["type"] === Record::A) {
@@ -39,6 +41,9 @@ class DnsParser
             }
             if ($record["type"] === Record::TXT) {
                 $info['TXT'][] = new TxtRecord($record['host'], $record['txt']);
+            }
+            if ($record["type"] === Record::CAA) {
+                $info['CAA'][] = new CaaRecord($record['host'], $record['flags'], $record['caa'], $record['txt']);
             }
         }
         return $info;
