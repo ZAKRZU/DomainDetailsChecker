@@ -2,53 +2,112 @@
     <div class="card">
         <div class="card-header"><b>DNS</b></div>
         <div class="card-body">
-            <b>A</b>
+            <h3>A <?php echo $this->vars->main_domain->getDomainName(); ?></h3>
             <div class="container">
-                <?php 
-                 if ($this->vars->main_domain->getDns()
-                 && $this->vars->main_domain->getDns()->A) {
-                        echo '<div class="row py-2 border-bottom bg-success-subtle">
-                            <div class="col">'.$this->vars->main_domain->getDomainName().'</div>
-                            <div class="col">'.$this->vars->main_domain->getDns()->A[0]->getValue().'</div>
-                            <div class="col">'.$this->vars->main_domain->getDns()->A[0]->getReverseAddr().'</div>
-                            </div>';
-                    } else {
-                        if ($this->vars->main_domain->getLastErrorMessage()) {
-                            echo '<div class="row py-2 border-bottom bg-danger-subtle">
-                                    <div class="col">'. $this->vars->main_domain->getLastErrorMessage() .'</div>
-                                  </div>';
-                        } else {
-                            echo '<div class="row py-2 border-bottom bg-danger-subtle">
-                                    <div class="col">'.$this->vars->main_domain->getDomainName().'</div>
-                                    <div class="col">Record not found</div>
-                                  </div>';
-                        }
-                    }
-
-                    if ($this->vars->sub_domain->getDns()
-                    && $this->vars->sub_domain->getDns()->A) {
-                        echo '<div class="row py-2 border-bottom bg-success-subtle">
-                                <div class="col">'.$this->vars->sub_domain->getDomainName().'</div>
-                                <div class="col">'.$this->vars->sub_domain->getDns()->A[0]->getValue().'</div>
-                                <div class="col">'.$this->vars->sub_domain->getDns()->A[0]->getReverseAddr().'</div>
-                              </div>';
-                    } else {
-                        if ($this->vars->sub_domain->getLastErrorMessage()) {
-                            echo '<div class="row py-2 border-bottom bg-danger-subtle">
-                                    <div class="col">'. $this->vars->sub_domain->getLastErrorMessage() .'</div>
-                                  </div>';
-                        } else {
-                            echo '<div class="row py-2 border-bottom bg-danger-subtle">
-                                    <div class="col">'.$this->vars->sub_domain->getDomainName().'</div>
-                                    <div class="col">Record not found</div>
-                                  </div>';
-                        }
-                    }
-
-                ?>
+            <?php if ($this->vars->main_domain->getDns() &&
+                    $this->vars->main_domain->getDns()->A) { ?>
+                <?php if (count($this->vars->main_domain->getDns()->A) > 1) { ?>
+                    <div class="row py-2 border-bottom bg-success-subtle">
+                        <div class="col"><?php echo $this->vars->main_domain->getDns()->A[0]->getValue() ?></div>
+                        <div class="col"><?php echo $this->vars->main_domain->getDns()->A[0]->getReverseAddr() ?></div>
+                        <div class="col-2">
+                            <a class="icon-link icon-link-hover" 
+                              style="--bs-icon-link-transform: translate3d(0, .125rem, 0);" 
+                              data-bs-toggle="collapse" 
+                              href="#collapseARecords" 
+                              role="button" 
+                              aria-expanded="false" 
+                              aria-controls="collapseARecords">
+                                <i class="bi bi-arrow-down"></i>
+                                More 
+                            </a>
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapseARecords">
+                    <?php foreach($this->vars->main_domain->getDns()->A as $key => $recordA) { ?>
+                        <?php if ($key == array_key_first($this->vars->main_domain->getDns()->A)) {
+                            continue;
+                        }?>
+                        <div class="row py-2 border-bottom bg-success-subtle">
+                            <div class="col"><?php echo $recordA->getValue() ?></div>
+                            <div class="col"><?php echo $recordA->getReverseAddr() ?></div>
+                        </div>
+                    <?php } ?>
+                    </div>
+                <?php } else { ?>
+                    <div class="row py-2 border-bottom bg-success-subtle">
+                        <div class="col"><?php echo $this->vars->main_domain->getDns()->A[0]->getValue() ?></div>
+                        <div class="col"><?php echo $this->vars->main_domain->getDns()->A[0]->getReverseAddr() ?></div>
+                    </div>
+                <?php } ?>
+            <?php } else { ?>
+                <?php if ($this->vars->main_domain->getLastErrorMessage()) { ?>
+                    <div class="row py-2 border-bottom bg-danger-subtle">
+                        <div class="col"><?php echo $this->vars->main_domain->getLastErrorMessage(); ?></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="row py-2 border-bottom bg-danger-subtle">
+                        <div class="col"><?php echo $this->vars->main_domain->getDomainName() ?></div>
+                        <div class="col">Record not found</div>
+                    </div>
+                <?php }?>
+            <?php } ?>
             </div>
+
+            <h3>A <?php echo $this->vars->sub_domain->getDomainName(); ?></h3>
+            <div class="container">
+            <?php if ($this->vars->sub_domain->getDns() &&
+                    $this->vars->sub_domain->getDns()->A) { ?>
+                <?php if (count($this->vars->sub_domain->getDns()->A) > 1) { ?>
+                    <div class="row py-2 border-bottom bg-success-subtle">
+                        <div class="col"><?php echo $this->vars->sub_domain->getDns()->A[0]->getValue() ?></div>
+                        <div class="col"><?php echo $this->vars->sub_domain->getDns()->A[0]->getReverseAddr() ?></div>
+                        <div class="col-2">
+                            <a class="icon-link icon-link-hover" 
+                              style="--bs-icon-link-transform: translate3d(0, .125rem, 0);" 
+                              data-bs-toggle="collapse" 
+                              href="#collapseARecords" 
+                              role="button" 
+                              aria-expanded="false" 
+                              aria-controls="collapseARecords">
+                                <i class="bi bi-arrow-down"></i>
+                                More 
+                            </a>
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapseARecords">
+                    <?php foreach($this->vars->sub_domain->getDns()->A as $key => $recordA) { ?>
+                        <?php if ($key == array_key_first($this->vars->sub_domain->getDns()->A)) {
+                            continue;
+                        }?>
+                        <div class="row py-2 border-bottom bg-success-subtle">
+                            <div class="col"><?php echo $recordA->getValue() ?></div>
+                            <div class="col"><?php echo $recordA->getReverseAddr() ?></div>
+                        </div>
+                    <?php } ?>
+                    </div>
+                <?php } else { ?>
+                    <div class="row py-2 border-bottom bg-success-subtle">
+                        <div class="col"><?php echo $this->vars->sub_domain->getDns()->A[0]->getValue() ?></div>
+                        <div class="col"><?php echo $this->vars->sub_domain->getDns()->A[0]->getReverseAddr() ?></div>
+                    </div>
+                <?php } ?>
+            <?php } else { ?>
+                <?php if ($this->vars->sub_domain->getLastErrorMessage()) { ?>
+                    <div class="row py-2 border-bottom bg-danger-subtle">
+                        <div class="col"><?php echo $this->vars->sub_domain->getLastErrorMessage(); ?></div>
+                    </div>
+                <?php } else { ?>
+                    <div class="row py-2 border-bottom bg-danger-subtle">
+                        <div class="col"><?php echo $this->vars->sub_domain->getDomainName() ?></div>
+                        <div class="col">Record not found</div>
+                    </div>
+                <?php }?>
+            <?php } ?>
+            </div>
+
             <?php 
-                  if ($this->vars->dns['txt_count'] > 0) {
+                if ($this->vars->active_domain->getDns()->TXT) {
                     // echo '<hr>';
                     echo '<div class="accordion mt-3" id="accordionTXT">
                             <div class="accordion-item">
@@ -64,7 +123,7 @@
                                 <div id="collapseRecords" class="accordion-collapse collapse" data-bs-parrent="#accordionTXT">
                                     <div class="accordion-body">
                                         <ul class="list-group list-group-flush">';
-                                            foreach ($this->vars->main_domain->getDns()->TXT as $key => $txtRecord) {
+                                            foreach ($this->vars->active_domain->getDns()->TXT as $key => $txtRecord) {
                                                 if (strcmp($txtRecord->getValue(), $this->vars->txt_lookup) === 0) {
                                                     echo '<li class="list-group-item list-group-item-primary">'.$txtRecord->getValue().'</li>';
                                                 } else {
@@ -80,7 +139,7 @@
             ?>
             <hr>
             <?php
-                  if ($this->vars->dns['caa_count'] > 0) {
+                if ($this->vars->active_domain->getDns()->CAA) {
                     echo '<div class="accordion mt-3" id="accordionCAA">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -91,7 +150,7 @@
                                 <div id="collapseCaaRecords" class="accordion-collapse collapse" data-bs-parrent="#accordionCAA">
                                     <div class="accordion-body">
                                         <ul class="list-group list-group-flush">';
-                                            foreach ($this->vars->main_domain->getDns()->CAA as $key => $caaRecord) {
+                                            foreach ($this->vars->active_domain->getDns()->CAA as $key => $caaRecord) {
                                                 echo '<li class="list-group-item">'.$caaRecord->getFlags().' '.$caaRecord->getTag().' ' .$caaRecord->getValue().'</li>';
                                             }
                     echo               '</ul>
