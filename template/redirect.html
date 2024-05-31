@@ -1,3 +1,59 @@
+<?php
+
+function templateHtmlTextTruncat(string $string): string
+{
+    if (strlen($string) > 45)
+        return "<span class=\"d-inline-block text-truncate\" style=\"max-width: 330px;\" data-bs-toggle=\"tooltip\" data-bs-title=\"$string\">$string</span>";
+    return $string;
+}
+
+function templateHtmlDomainRow($domainFrom, $domainTo, $redirect): string
+{
+    $retHtml = "";
+    $domainFrom = templateHtmlTextTruncat($domainFrom);
+    $domainTo = templateHtmlTextTruncat($domainTo);
+    $retHtml .=     "<div class=\"col-lg\">$domainFrom</div>";
+    $retHtml .=     "<div class=\"col\">$domainTo</div>";
+    if ($redirect->hasHTTPS()) {
+        $retHtml .= '<div class="col-2"><span class="badge bg-success">YES</span></div>';
+    } else {
+        $retHtml .= '<div class="col-2"><span class="badge bg-danger">NO</span></div>';
+    }
+    if (!$redirect->isAbroad()) {
+        $retHtml .= '<div class="col-2"><span class="badge bg-success">YES</span></div>';
+    } else {
+        $retHtml .= '<div class="col-2"><span class="badge bg-danger">NO</span></div>';
+    }
+    return $retHtml;
+}
+
+function templateHtmRedirectRow($redirect, $key): string
+{
+    $retHtml = "";
+    if ($redirect->isAbroad() || !$redirect->hasHTTPS()) {
+        $retHtml .= '<div class="row py-2 border-bottom bg-danger-subtle position-relative">';
+    } else {
+        $retHtml .= '<div class="row py-2 border-bottom position-relative">';
+    }
+    $retHtml .= templateHtmlDomainRow($redirect->getRedirects()[0]->getFrom(), $redirect->getLastRedirect()->getRedirectedTo(), $redirect);
+
+    $retHtml .=     "<a href=\"#$key\" class=\"stretched-link\"
+                        data-bs-toggle=\"collapse\" role=\"button\"
+                        aria-expanded=\"false\"
+                        aria-controls=\"$key\">
+                    </a>";
+    $retHtml .= "</div>";
+    foreach($redirect->getRedirects() as $subRedirect) {
+        $retHtml .= "<div class=\"collapse bg-secondary\" id=\"$key\">";
+        $retHtml .= '<div class="row p-2">';
+        $retHtml .= templateHtmlDomainRow($subRedirect->getFrom(), $subRedirect->getRedirectedTo(), $subRedirect);
+        $retHtml .= '</div>';
+        $retHtml .= '</div>';
+    }
+    return $retHtml;
+}
+
+?>
 <div class="container mb-2">
     <div class="row py-2 border-bottom">
         <div class="col-2 col-lg">FROM</div>
@@ -7,47 +63,7 @@
     </div>
     <?php foreach($this->vars->red_list as $key => $value) { ?>
     <?php   if (count($value->getRedirects()) > 0) { ?>
-    <?php       if ($value->isAbroad() || !$value->hasHTTPS()) { ?>
-            <div class="row py-2 border-bottom bg-danger-subtle position-relative">
-    <?php       } else { ?>
-            <div class="row py-2 border-bottom position-relative">
-    <?php       } ?>
-                <div class="col-lg"><?php echo $value->getRedirects()[0]->getFrom(); ?></div>
-                <div class="col"><?php echo $value->getLastRedirect()->getRedirectedTo() ?></div>
-                    <?php if ($value->hasHTTPS()) { ?>
-                        <div class="col-2"><span class="badge bg-success">YES</span></div>
-                    <?php } else { ?>
-                        <div class="col-2"><span class="badge bg-danger">NO</span></div>
-                    <?php } ?>
-                    <?php if (!$value->isAbroad()) { ?>
-                        <div class="col-2"><span class="badge bg-success">YES</span></div>
-                    <?php } else { ?>
-                        <div class="col-2"><span class="badge bg-danger">NO</span></div>
-                    <?php } ?>
-                        <a href="#<?php echo $key; ?>" class="stretched-link" 
-                            data-bs-toggle="collapse" role="button" 
-                            aria-expanded="false" 
-                            aria-controls="<?php echo $key; ?>">
-                        </a>
-            </div>
-            <?php foreach($value->getRedirects() as $kvalue) { ?>
-                <div class="collapse bg-secondary" id="<?php echo $key; ?>">
-                    <div class="row p-2">
-                        <div class="col-lg"><?php echo $kvalue->getFrom(); ?></div>
-                        <div class="col"><?php echo $kvalue->getRedirectedTo(); ?></div>
-                        <?php if ($kvalue->hasHTTPS()) { ?>
-                            <div class="col-2"><span class="badge bg-success">YES</span></div>
-                        <?php } else { ?>
-                            <div class="col-2"><span class="badge bg-danger">NO</span></div>
-                        <?php } ?>
-                        <?php if (!$kvalue->isAbroad()) { ?>
-                            <div class="col-2"><span class="badge bg-success">YES</span></div>
-                        <?php } else { ?>
-                            <div class="col-2"><span class="badge bg-danger">NO</span></div>
-                        <?php } ?>
-                    </div>
-                </div>
-            <?php } ?>
+    <?php       echo templateHtmRedirectRow($value, $key); ?>
     <?php   } else { ?>
             <div class="row py-2 border-bottom bg-danger-subtle">
                 <div class="col">http://<?php echo $value->getDomain()->getDomainName() . $value->getPath(); ?></div>

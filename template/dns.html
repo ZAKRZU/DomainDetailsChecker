@@ -14,16 +14,16 @@
                             <a class="icon-link icon-link-hover" 
                               style="--bs-icon-link-transform: translate3d(0, .125rem, 0);" 
                               data-bs-toggle="collapse" 
-                              href="#collapseARecords" 
+                              href="#collapseARecordsMain"
                               role="button" 
                               aria-expanded="false" 
-                              aria-controls="collapseARecords">
+                              aria-controls="collapseARecordsMain">
                                 <i class="bi bi-arrow-down"></i>
                                 More 
                             </a>
                         </div>
                     </div>
-                    <div class="collapse" id="collapseARecords">
+                    <div class="collapse" id="collapseARecordsMain">
                     <?php foreach($this->vars->main_domain->getDns()->A as $key => $recordA) { ?>
                         <?php if ($key == array_key_first($this->vars->main_domain->getDns()->A)) {
                             continue;
@@ -66,16 +66,16 @@
                             <a class="icon-link icon-link-hover" 
                               style="--bs-icon-link-transform: translate3d(0, .125rem, 0);" 
                               data-bs-toggle="collapse" 
-                              href="#collapseARecords" 
+                              href="#collapseARecordsSub"
                               role="button" 
                               aria-expanded="false" 
-                              aria-controls="collapseARecords">
+                              aria-controls="collapseARecordsSub">
                                 <i class="bi bi-arrow-down"></i>
                                 More 
                             </a>
                         </div>
                     </div>
-                    <div class="collapse" id="collapseARecords">
+                    <div class="collapse" id="collapseARecordsSub">
                     <?php foreach($this->vars->sub_domain->getDns()->A as $key => $recordA) { ?>
                         <?php if ($key == array_key_first($this->vars->sub_domain->getDns()->A)) {
                             continue;
