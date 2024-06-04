@@ -2,6 +2,7 @@
 
 namespace Zakrzu\DDC\Controller;
 
+use Iodev\Whois\Exceptions\ServerMismatchException;
 use Zakrzu\DDC\App;
 
 use Zakrzu\DDC\Component\SSLComponent;
@@ -50,6 +51,8 @@ class IndexController
         $rRedirect = null;
         $redList = [];
         $wp = null;
+        $whoisInfo = null;
+        $whoisRaw = null;
 
         $domainName = $this->parseDomain($_GET["lookup"]);
         $mainDomain = new DomainInfo($domainName);
@@ -60,8 +63,12 @@ class IndexController
         else if ($subDomain->getDns())
             $activeDomain = $subDomain;
 
-        $whoisInfo = $this->whoisExt->loadDomainInfo($domainName);
-        $whoisRaw = $this->whoisExt->lookupDomain($domainName)->text ?? null;
+        try {
+            $whoisInfo = $this->whoisExt->loadDomainInfo($domainName);
+            $whoisRaw = $this->whoisExt->lookupDomain($domainName)->text ?? null;
+        } catch (ServerMismatchException $e) {
+            $whoisRaw = $e->getMessage();
+        }
 
         if ($activeDomain) {
             if (isset($_GET["txt"])) {
