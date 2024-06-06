@@ -2,8 +2,8 @@
 
 function templateHtmlTextTruncat(string $string): string
 {
-    if (strlen($string) > 45)
-        return "<span class=\"d-inline-block text-truncate\" style=\"max-width: 330px;\" data-bs-toggle=\"tooltip\" data-bs-title=\"$string\">$string</span>";
+    if (strlen($string) > 40)
+        return "<span class=\"d-inline-block text-truncate\" style=\"max-width: 290px;\" data-bs-toggle=\"tooltip\" data-bs-title=\"$string\">$string</span>";
     return $string;
 }
 
