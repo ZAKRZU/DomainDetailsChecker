@@ -2,7 +2,9 @@
 
 namespace Zakrzu\DDC\Controller;
 
+use Iodev\Whois\Exceptions\ConnectionException;
 use Iodev\Whois\Exceptions\ServerMismatchException;
+use Iodev\Whois\Exceptions\WhoisException;
 use Zakrzu\DDC\App;
 
 use Zakrzu\DDC\Component\SSLComponent;
@@ -66,7 +68,7 @@ class IndexController
         try {
             $whoisInfo = $this->whoisExt->loadDomainInfo($domainName);
             $whoisRaw = $this->whoisExt->lookupDomain($domainName)->text ?? null;
-        } catch (ServerMismatchException $e) {
+        } catch (ServerMismatchException | ConnectionException | WhoisException $e) {
             $whoisRaw = $e->getMessage();
         }
 
