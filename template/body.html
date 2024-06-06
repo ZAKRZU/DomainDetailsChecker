@@ -70,7 +70,8 @@
         <div class="row">
         <?php     
             include 'redirect.html';
-            include 'wp.html';
+            if ($this->vars->wp)
+                include 'wp.html';
         ?>
         </div>
         <?php } ?>

@@ -18,6 +18,9 @@ class DomainRedirect
 
     private array $allHeaders;
 
+    private int $errorNumber = 0;
+
+    private string $errorString = "";
 
     public function __construct(private ?DomainInfo $domain, private string $path = '')
     {
@@ -130,6 +133,16 @@ class DomainRedirect
         return $this->path;
     }
 
+    public function getErrorCode(): int
+    {
+        return $this->errorNumber;
+    }
+
+    public function getErrorMessage(): string
+    {
+        return $this->errorString;
+    }
+
     public function loadRedirect(): Redirect
     {
         $redirect = new Redirect($this->lastLocation);
@@ -145,9 +158,16 @@ class DomainRedirect
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($this->curl, CURLOPT_USERAGENT, "Mozilla/5.0 (X11; Linux x86_64; rv:126.0) Gecko/20100101 Firefox/126.0");
-        curl_setopt($this->curl, CURLOPT_TIMEOUT, 30);
+        // Curl timeout is now controlled by RedirectManager
 
         $response = curl_exec($this->curl);
+
+        $errno = curl_errno($this->curl);
+
+        if ($errno > 0) {
+            $this->errorNumber = $errno;
+            $this->errorString = curl_error($this->curl);
+        }
 
         // Then, after your curl_exec call:
         $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);

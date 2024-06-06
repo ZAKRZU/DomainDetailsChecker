@@ -10,6 +10,8 @@ class SSLComponent
     const SSL_WARNING = 1;
     const SSL_INVALID = 2;
 
+    const SSL_TIMEOUT = 15;
+
     private string $cn;
 
     private string $issuer;
@@ -20,16 +22,23 @@ class SSLComponent
 
     private array $subjectAltNames = [];
 
+    private int $errorNumber;
+
+    private string $errorString;
+
     public function __construct(private string $domain)
     {
-        // EXPERIMENTAL
         $get = stream_context_create(array("ssl" => array("capture_peer_cert" => TRUE, "verify_peer" => FALSE, "verify_peer_name" => FALSE)));
-        // ORIGINAL
-        // $get = stream_context_create(array("ssl" => array("capture_peer_cert" => TRUE)));
+
         if (APP_ENV === "DEV") {
-            $read = stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
+            $read = stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, SSLComponent::SSL_TIMEOUT, STREAM_CLIENT_CONNECT, $get);
         } else {
-            $read = @stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, 30, STREAM_CLIENT_CONNECT, $get);
+            $read = @stream_socket_client("ssl://" . $domain . ":443", $errno, $errstr, SSLComponent::SSL_TIMEOUT, STREAM_CLIENT_CONNECT, $get);
+        }
+
+        if ($errno > 0) {
+            $this->errorNumber = $errno;
+            $this->errorString = $errstr;
         }
 
         if ($read == false) {
@@ -39,6 +48,7 @@ class SSLComponent
             $this->validTo = "";
             return;
         }
+
         $cert = stream_context_get_params($read);
         $certinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
 
@@ -97,7 +107,6 @@ class SSLComponent
         return SSLComponent::SSL_INVALID;
     }
 
-    // EXPERIMENTAL
     public function hasValidCN(): bool
     {
         foreach ($this->subjectAltNames as $altName) {
@@ -114,5 +123,16 @@ class SSLComponent
         if (str_contains($this->issuer, "US Let's Encrypt R3"))
             return true;
         return false;
+    }
+
+    public function getErrorCode(): int
+    {
+        return $this->errorNumber;
+    }
+
+
+    public function getErrorMessage(): string
+    {
+        return $this->errorString;
     }
 }

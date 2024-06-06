@@ -16,13 +16,31 @@ class RedirectManager
 
     private DomainRedirect $domainWithPath;
 
+    private int $failedCount = 0;
+
     public function __construct(DomainInfo $domain, DomainInfo $subDomain)
     {
+        $curl = RedirectManager::getCurlHandle();
+        $curlTimeout = 15;
+        curl_setopt($curl, CURLOPT_TIMEOUT, $curlTimeout);
+
         $this->mainDomain = new DomainRedirect($domain);
+
+        if ($this->mainDomain->getErrorCode() > 0) {
+            $this->failedCount++;
+            $curlTimeout = 5;
+            curl_setopt($curl, CURLOPT_TIMEOUT, $curlTimeout);
+        }
 
         $this->subDomain = new DomainRedirect($subDomain);
 
+        if ($this->subDomain->getErrorCode() > 0)
+            $this->failedCount++;
+
         $this->domainWithPath = new DomainRedirect($domain, '/random/url/');
+
+        if ($this->domainWithPath->getErrorCode() > 0)
+            $this->failedCount++;
     }
 
     public function getMainDomain(): DomainRedirect
@@ -38,6 +56,11 @@ class RedirectManager
     public function getDomainWithPath(): DomainRedirect
     {
         return $this->domainWithPath;
+    }
+
+    public function getFailedCount(): int
+    {
+        return $this->failedCount;
     }
 
     public function __destruct()

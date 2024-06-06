@@ -96,7 +96,8 @@ class IndexController
             $redList[] = $sRedirect;
             $redList[] = $rRedirect;
 
-            $wp = new WordpressComponent($redirectManager->getMainDomain(), $activeDomain->getDomainName());
+            if ($redirectManager->getFailedCount() < 1)
+                $wp = new WordpressComponent($redirectManager->getMainDomain(), $activeDomain->getDomainName());
         }
 
         return new TemplateView("body.html", [
