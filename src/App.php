@@ -18,7 +18,7 @@ use Zakrzu\DDC\Exceptions\ModuleException;
 class App
 {
 
-    const VERSION = "0.6.0";
+    const VERSION = "0.6.1";
 
     public static $app;
 

@@ -1,3 +1,17 @@
+<?php
+$caaList = DNS_CAA_LIST;
+
+function templateRecordTag(string $reverseAddress): string
+{
+    if (DNS_REV_NAME == null) {
+        return '<div class="row py-2 border-bottom bg-success-subtle">';
+    }
+    if (str_contains($reverseAddress, DNS_REV_NAME))
+        return '<div class="row py-2 border-bottom bg-success-subtle">';
+    return '<div class="row py-2 border-bottom bg-warning-subtle">';
+}
+
+?>
 <div class="col-lg-6 mb-3 mb-lg-0">
     <div class="card">
         <div class="card-header"><b>DNS</b></div>
@@ -7,14 +21,14 @@
             <?php if ($this->vars->main_domain->getDns() &&
                     $this->vars->main_domain->getDns()->A) { ?>
                 <?php if (count($this->vars->main_domain->getDns()->A) > 1) { ?>
-                    <div class="row py-2 border-bottom bg-success-subtle">
+                    <?php echo templateRecordTag($this->vars->main_domain->getDns()->A[0]->getReverseAddr()); ?>
                         <div class="col"><?php echo $this->vars->main_domain->getDns()->A[0]->getValue() ?></div>
                         <div class="col"><?php echo $this->vars->main_domain->getDns()->A[0]->getReverseAddr() ?></div>
                         <div class="col-2">
                             <a class="icon-link icon-link-hover" 
                               style="--bs-icon-link-transform: translate3d(0, .125rem, 0);" 
                               data-bs-toggle="collapse" 
-                              href="#collapseARecordsMain"
+                              href="#collapseARecordsMain" 
                               role="button" 
                               aria-expanded="false" 
                               aria-controls="collapseARecordsMain">
@@ -28,14 +42,16 @@
                         <?php if ($key == array_key_first($this->vars->main_domain->getDns()->A)) {
                             continue;
                         }?>
-                        <div class="row py-2 border-bottom bg-success-subtle">
+
+                        <?php echo templateRecordTag($recordA->getReverseAddr()); ?>
                             <div class="col"><?php echo $recordA->getValue() ?></div>
                             <div class="col"><?php echo $recordA->getReverseAddr() ?></div>
                         </div>
                     <?php } ?>
                     </div>
                 <?php } else { ?>
-                    <div class="row py-2 border-bottom bg-success-subtle">
+
+                    <?php echo templateRecordTag($this->vars->main_domain->getDns()->A[0]->getReverseAddr()); ?>
                         <div class="col"><?php echo $this->vars->main_domain->getDns()->A[0]->getValue() ?></div>
                         <div class="col"><?php echo $this->vars->main_domain->getDns()->A[0]->getReverseAddr() ?></div>
                     </div>
@@ -59,14 +75,14 @@
             <?php if ($this->vars->sub_domain->getDns() &&
                     $this->vars->sub_domain->getDns()->A) { ?>
                 <?php if (count($this->vars->sub_domain->getDns()->A) > 1) { ?>
-                    <div class="row py-2 border-bottom bg-success-subtle">
+                    <?php echo templateRecordTag($this->vars->sub_domain->getDns()->A[0]->getReverseAddr()); ?>
                         <div class="col"><?php echo $this->vars->sub_domain->getDns()->A[0]->getValue() ?></div>
                         <div class="col"><?php echo $this->vars->sub_domain->getDns()->A[0]->getReverseAddr() ?></div>
                         <div class="col-2">
                             <a class="icon-link icon-link-hover" 
                               style="--bs-icon-link-transform: translate3d(0, .125rem, 0);" 
                               data-bs-toggle="collapse" 
-                              href="#collapseARecordsSub"
+                              href="#collapseARecordsSub" 
                               role="button" 
                               aria-expanded="false" 
                               aria-controls="collapseARecordsSub">
@@ -80,14 +96,15 @@
                         <?php if ($key == array_key_first($this->vars->sub_domain->getDns()->A)) {
                             continue;
                         }?>
-                        <div class="row py-2 border-bottom bg-success-subtle">
+
+                        <?php echo templateRecordTag($recordA->getReverseAddr()); ?>
                             <div class="col"><?php echo $recordA->getValue() ?></div>
                             <div class="col"><?php echo $recordA->getReverseAddr() ?></div>
                         </div>
                     <?php } ?>
                     </div>
                 <?php } else { ?>
-                    <div class="row py-2 border-bottom bg-success-subtle">
+                    <?php echo templateRecordTag($this->vars->sub_domain->getDns()->A[0]->getReverseAddr()); ?>
                         <div class="col"><?php echo $this->vars->sub_domain->getDns()->A[0]->getValue() ?></div>
                         <div class="col"><?php echo $this->vars->sub_domain->getDns()->A[0]->getReverseAddr() ?></div>
                     </div>
@@ -106,17 +123,17 @@
             <?php } ?>
             </div>
 
+
             <?php 
-                if ($this->vars->active_domain->getDns()->TXT) {
-                    // echo '<hr>';
+                if ($this->vars->dns["txt_count"] > 0) {
                     echo '<div class="accordion mt-3" id="accordionTXT">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRecords">';
                                         if ($this->vars->has_txt) {
-                                            echo '<h6>TXT Records ('.$this->vars->dns['txt_count'].') <span class="badge bg-success">Validation TXT Found!</span></h6>';
+                                            echo '<h6>TXT Records ('.$this->vars->dns["txt_count"].') <span class="badge bg-success">Validation TXT Found!</span></h6>';
                                         } else {
-                                            echo '<h6>TXT Records ('.$this->vars->dns['txt_count'].')</h6>';
+                                            echo '<h6>TXT Records ('.$this->vars->dns["txt_count"].')</h6>';
                                         }
                     echo           '</button>
                                 </h2>
@@ -139,19 +156,40 @@
             ?>
             <hr>
             <?php
-                if ($this->vars->active_domain->getDns()->CAA) {
+                  if ($this->vars->dns['caa_count'] > 0) {
                     echo '<div class="accordion mt-3" id="accordionCAA">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCaaRecords">';
-                    echo                '<h6>CAA Records ('.$this->vars->dns['caa_count'].')</h6>';
+
+                            echo '<h6>CAA Records ('.$this->vars->dns['caa_count'].') ';
+                            echo "<span class=\"badge bg-success\">";
+                            foreach ($caaList as $value) {
+                                foreach ($this->vars->main_domain->getDns()->CAA as $key => $caaRecord) {
+                                    if (str_contains($caaRecord->getValue(), $value))
+                                        echo $value . " ";
+                                }
+                            }
+                            echo "</span>";
+                            echo '</h6>';
                     echo           '</button>
                                 </h2>
                                 <div id="collapseCaaRecords" class="accordion-collapse collapse" data-bs-parrent="#accordionCAA">
                                     <div class="accordion-body">
                                         <ul class="list-group list-group-flush">';
-                                            foreach ($this->vars->active_domain->getDns()->CAA as $key => $caaRecord) {
-                                                echo '<li class="list-group-item">'.$caaRecord->getFlags().' '.$caaRecord->getTag().' ' .$caaRecord->getValue().'</li>';
+                                            foreach ($this->vars->main_domain->getDns()->CAA as $key => $caaRecord) {
+                                                $contains = false;
+                                                foreach ($caaList as $value) {
+                                                    if (str_contains($caaRecord->getValue(), $value)) {
+                                                        echo '<li class="list-group-item list-group-item-primary">'.$caaRecord->getFlags().' '.$caaRecord->getTag().' ' .$caaRecord->getValue().'</li>';
+                                                        $contains = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                if (!$contains){
+                                                    echo '<li class="list-group-item">'.$caaRecord->getFlags().' '.$caaRecord->getTag().' ' .$caaRecord->getValue().'</li>';
+                                                }
                                             }
                     echo               '</ul>
                                     </div>
@@ -167,9 +205,9 @@
             <div class="d-flex gap-2 px-3 flex-wrap">
                 <?php 
                      if ($this->vars->dns["ns_count"] > 0) {
-                         foreach ($this->vars->active_domain->getDns()->NS as $key => $nsRecord) {
-                             echo "<p>".$nsRecord->getValue()."</p>";
-                         }
+                     foreach ($this->vars->active_domain->getDns()->NS as $key => $nsRecord) {
+                         echo "<p>".$nsRecord->getValue()."</p>";
+                        }
                     } else {
                         echo "Nameservers not found";
                     }
